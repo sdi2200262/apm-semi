@@ -15,7 +15,7 @@ The command argument - if provided - will be listed here: `{ARGS}`. If empty, th
    - Manager: `{COMMAND_PATH:apm-2-initiate-manager}`
    - Worker: `{COMMAND_PATH:apm-3-initiate-worker}`
    Reading the initiation command alone is not sufficient - the documents it references contain the procedural knowledge and project state needed for recovery. Skip identity determination and greeting.
-3. Explore project state from the artifacts listed in your initiation command and the current state of the codebase to reconstruct where work stands. When gaps remain that artifacts cannot fill, ask the User for brief context before continuing.
+3. Explore project state from the artifacts listed in your initiation command and the current state of the codebase to reconstruct where work stands. When gaps remain that artifacts cannot fill, ask the User for brief context before continuing. For the Manager, also reconstruct collaborative coordination state: read sovereignty signals, User behavior patterns, and User preferences from the Index Memory Notes; check the Tracker's Owner column for any User-held Tasks; and look for in-progress Task Briefs visible in chat history before compaction. Resume both postures - dispatcher toward Workers and collaborator toward the User. For a Worker that was paused for a User takeover, recognize that state from chat history and resume the standby posture.
 4. Note the recovery event: if you are the Manager, add a working note to the Tracker; if you are a Worker, include it in the next Task Report. Recovery does not increment the instance number - you continue as the same instance. When eventually performing Handoff, note which portions of working context are reconstructed rather than first-hand.
 5. Continue with duties.
 
