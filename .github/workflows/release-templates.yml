@@ -1,0 +1,136 @@
+# .github/workflows/release-templates.yml
+name: Release Templates
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version override (e.g., 1.1.0, 1.0.0-test-1). Leave empty to auto-increment patch.'
+        required: false
+        default: ''
+      release_notes:
+        description: 'Release notes for the GitHub release.'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  release_templates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name || 'main' }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Determine Version
+        id: version
+        run: |
+          if [[ -n "${{ github.event.inputs.version }}" ]]; then
+            # Use provided version override
+            VERSION="${{ github.event.inputs.version }}"
+            echo "Using version override: $VERSION"
+          else
+            # Find latest stable release tag (vX.Y.Z without pre-release suffix)
+            LATEST_TAG=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+
+            if [[ -z "$LATEST_TAG" ]]; then
+              echo "No previous stable release found. Please provide a version override for the first release."
+              exit 1
+            fi
+
+            echo "Latest stable tag: $LATEST_TAG"
+
+            # Parse version and increment patch
+            if [[ "$LATEST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              MAJOR="${BASH_REMATCH[1]}"
+              MINOR="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              NEW_PATCH=$((PATCH + 1))
+              VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+              echo "Auto-incremented patch: $LATEST_TAG -> v$VERSION"
+            else
+              echo "Failed to parse version from $LATEST_TAG"
+              exit 1
+            fi
+          fi
+
+          # Determine if this is a pre-release
+          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-.+$ ]]; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check Tag Exists
+        id: check_tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --tags origin "refs/tags/${TAG}" | grep -q "$TAG"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and Push Tag
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "$TAG" HEAD
+          git push origin "$TAG"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build templates
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: npm run build:release
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+          RELEASE_NOTES: ${{ github.event.inputs.release_notes }}
+        run: |
+          if [[ -n "$RELEASE_NOTES" ]]; then
+            NOTES="$RELEASE_NOTES"
+          else
+            NOTES="APM Release $TAG"
+          fi
+
+          PRERELEASE_FLAG=""
+          if [[ "$PRERELEASE" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG exists. Updating assets."
+            gh release upload "$TAG" dist/*.zip dist/apm-release.json --clobber
+          else
+            echo "Creating release $TAG"
+            gh release create "$TAG" \
+              dist/*.zip \
+              dist/apm-release.json \
+              --title "APM Release $TAG" \
+              --notes "$NOTES" \
+              --target "$GITHUB_SHA" \
+              $PRERELEASE_FLAG
+          fi

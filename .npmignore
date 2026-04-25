@@ -1,0 +1,34 @@
+# Build and test (exclude from NPM package)
+build/
+scripts/
+test/
+*.test.js
+dist/
+tmp/
+_standards/
+
+# Development
+.git
+.github
+.gitignore
+node_modules/
+templates/
+skills/
+
+# Documentation (exclude source docs and website, but keep essential CLI docs)
+docs/
+assets/
+website/
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+
+# Configuration (exclude development config)
+.eslintrc*
+.prettierrc*
+build-config.json
+
+# CI/CD
+.github/
+
+# Development files
+docusaurus_start.log
