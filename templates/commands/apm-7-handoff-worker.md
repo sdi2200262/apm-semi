@@ -40,6 +40,7 @@ Perform the following actions:
    - *Mid-Task:* "Read the Task from `task.md`, I completed steps 1-4, resume from step 5." Direct the incoming Worker to read the Task Bus file directly (intact since Task receipt). Include execution progress detail.
    - *Mid-batch:* The batch is still in `task.md`. Describe the state of each Task in the batch - which are complete (logs written), which is in progress and how far, and which have not been started. The incoming Worker reads the intact batch from the Task Bus and continues from where work left off.
    - *Between-Tasks:* "No active Task, await `/apm-4-check-tasks`." State context and readiness.
+   - *Paused for User takeover:* The User has taken over an in-progress Task and you have been holding standby. Describe what was complete at takeover, what files were touched, what decisions were made, and what was about to come next. State that the User holds the Task; the incoming Worker resumes the standby posture and waits for the User to report back, ask questions, or unclaim. Do not write a partial Task Log on Handoff - the eventual Task Log writes when the User reports done per `{GUIDE_PATH:task-execution}` §3.7 User Takeover.
 3. Include: Handoff Log path, instructions to read current Stage Task Logs, and reminder to indicate incoming Worker status in first Task Report (listing specific Task Log files loaded and, when previous Stages exist, noting that previous-Stage logs were not loaded).
 
 ### 2.3 User Review and Finalization
@@ -96,7 +97,7 @@ Written to `.apm/bus/<agent-slug>/handoff.md`. The incoming Worker processes thi
 - *Current State:* Current Stage, Tasks completed this instance, notes.
 - *Continuation guidance:* Specific guidance for the incoming Worker about in-progress patterns or upcoming work.
 - *Incoming Worker indication:* Remind incoming Worker to include Handoff status in first Task Report - state instance number, list specific Task Log files loaded, and when previous Stages exist note that previous-Stage logs were not loaded. This triggers Manager Handoff detection.
-- *Immediate Next Action:* For mid-Task or mid-batch, instruct the incoming Worker to read the Task Bus and continue. For between-Tasks, state readiness to await `/apm-4-check-tasks`.
+- *Immediate Next Action:* For mid-Task or mid-batch, instruct the incoming Worker to read the Task Bus and continue. For between-Tasks, state readiness to await `/apm-4-check-tasks`. For paused-for-takeover, instruct the incoming Worker to acknowledge the takeover state in chat and wait for the User to report back or otherwise direct the conversation.
 - *Closing instruction:* Confirm to User that Handoff Log and Stage context have been read, then state readiness.
 
 ---

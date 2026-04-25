@@ -30,6 +30,8 @@ Perform the following actions:
    - VC state extracted from the Tracker in context: active branches, worktrees, pending merges.
    - User preferences and communication patterns.
    - Coordination insights, decisions made, approaches tried.
+   - User-owned Task history during this instance: which Tasks the User claimed, which were unclaimed, takeover events on Worker Tasks, and any patterns in how the User has handled validation and reporting-done.
+   - Sovereignty and behavior observations accumulated this instance that have not yet been promoted to Memory notes.
 
 ### 2.2 Handoff Prompt Creation
 
@@ -39,6 +41,8 @@ Perform the following actions:
    - Mid-review progress and pending review outcomes.
    - Active Workers and their dispatch state.
    - Pointers to Task Logs and files for the incoming Manager to read.
+   - User-owned Task state: any Task currently held by the User, what the User has done so far if visible, in-progress Task Briefs visible in chat history, and what the User is expected to report back.
+   - Pending recommendations the prior Manager planned to surface but has not yet (recommendations live as durable Memory notes when accepted; pending ones may not have been recorded).
 
 ### 2.3 User Review and Finalization
 
@@ -78,6 +82,7 @@ stage: <N>
 - *Summary:* Stages coordinated, Tasks reviewed, dispatch cycles completed.
 - *Working Context.* Tracked Worker Handoffs table (Agent, Handoff Stage, current-Stage logs loaded, notes) with dependency context implication. VC state: active branches, worktrees, pending merges, base branch. Dispatch patterns.
 - *Working Notes:* Coordination insights, User preferences, decisions made, approaches tried.
+- *Collaborative Context:* User-owned Task history this instance, takeover events, observed User behavior patterns (validation handling, claim and unclaim tendencies, engagement with various areas), and sovereignty or behavior observations not yet promoted to Memory notes.
 
 ---
 
@@ -88,12 +93,14 @@ Written to `.apm/bus/manager/handoff.md`. The incoming Manager processes this pr
 **Required content:**
 - *Identity:* Outgoing and incoming instance numbers.
 - *Rebuilding context:*
-  1. Read Handoff Log - note tracked Worker Handoffs and VC state.
-  2. Read current-Stage Task Logs (all agents).
-  3. For previous-Stage dependency context encountered later: read the specific Task Log on demand. If the Task Log is insufficient, read referenced files to reconstruct context.
-- *Current State:* Current Stage, Stage progress, next Task, blockers, working notes.
-- *Immediate Next Action:* Specific coordination action to resume.
-- *Closing instruction:* Output a concise understanding summary (project state, Worker Handoffs and implications, VC state, next action) then proceed with coordination.
+  1. Read Handoff Log - note tracked Worker Handoffs, VC state, and Collaborative Context.
+  2. Read the Index Memory Notes - sovereignty signals, User behavior patterns, User preferences are first-class durable memory.
+  3. Read current-Stage Task Logs (all agents).
+  4. For previous-Stage dependency context encountered later: read the specific Task Log on demand. If the Task Log is insufficient, read referenced files to reconstruct context.
+- *Current State:* Current Stage, Stage progress, next Task, blockers, working notes, User-owned Task state (any Task currently held by the User and what is expected back).
+- *Pending recommendations:* Any recommendations the prior Manager planned to surface but has not yet, so the incoming Manager picks up the thread.
+- *Immediate Next Action:* Specific coordination action to resume. Resume both postures - dispatcher toward Workers and collaborator toward the User.
+- *Closing instruction:* Output a concise understanding summary (project state, Worker Handoffs and implications, VC state, User-owned Task state, next action) then proceed with coordination.
 
 ---
 
