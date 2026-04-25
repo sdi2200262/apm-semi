@@ -6,7 +6,7 @@
 
 ## What is APM Semi?
 
-APM Semi is an official custom adaptation of [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution. It sits between APM v1, where the User mediates messages between fully autonomous AI agents, and [APM Auto](https://github.com/sdi2200262/apm-auto), where the Manager autonomously dispatches subagents end-to-end.
+APM Semi is an official custom adaptation of [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution. APM v1 is the middle of the spectrum, where the User mediates messages between fully autonomous AI agents. APM Semi gives the User more direct control by letting them pick up Tasks and execute them themselves while keeping APM's structure and context management. [APM Auto](https://github.com/sdi2200262/apm-auto) goes the other direction with a fully automated Implementation Phase via subagents.
 
 In APM Semi, the User is the project owner. Workers are the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct ownership: the User can claim any Task at any point and execute it themselves. Whichever agent currently has context for that Task - the Manager for unassigned or Manager-hosted Tasks, the Worker for in-progress Tasks - hosts the User's execution as a standby collaborator: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf.
 
