@@ -29,7 +29,7 @@ Open your AI assistant and start planning:
 /apm-1-initiate-planner
 ```
 
-The Planner collaborates with you through project discovery and creates the planning documents. During discovery it listens for sovereignty signals - areas you want direct ownership over - alongside its existing focuses, and you can claim Tasks during Plan and Spec review. Once approved, open a new chat and run `/apm-2-initiate-manager` to begin the Implementation Phase.
+The Planner collaborates with you through project discovery and creates the planning documents. During discovery it listens for sovereignty signals - areas you want direct ownership over - alongside its existing focuses, and you can claim Tasks during Plan review. Once approved, open a new chat and run `/apm-2-initiate-manager` to begin the Implementation Phase.
 
 ## How It Works
 
@@ -38,7 +38,7 @@ APM Semi inherits the APM v1 architecture: the three-agent model (Planner, Manag
 The collaborative layer adds:
 
 - **Sovereignty signal detection** during Context Gathering. Signals are recorded as durable Memory notes in the Index that the Manager reads during the Implementation Phase.
-- **User-claimable Tasks** during Plan and Spec review and dynamically at any point during the Implementation Phase. The User can also take over an in-progress Worker Task by signaling in the Worker's chat.
+- **User-claimable Tasks** during Plan review and dynamically at any point during the Implementation Phase. The User can also take over an in-progress Worker Task by signaling in the Worker's chat.
 - **Task Briefs** in chat instead of Task Prompts on the bus when the Manager is collaborating with the User on a Task. The Brief carries the same content as a Task Prompt, written conversationally to the User rather than as instructions to an executor.
 - **Standby collaborator posture** for the AI agent on the User's side (the Manager or, after a takeover, the Worker assigned to the Task). The agent does not work the Task autonomously while the User holds it; it is available for questions, runs validation when the User returns, and writes the Task Log on the User's behalf.
 - **Validation iteration** with bounded scope and systemic-or-persistent escalation. When validation fails on User-completed work, the agent on standby attempts to resolve within scope and escalates with cleaned-up code state if the failure is architectural, design-level, or not resolving across attempts.

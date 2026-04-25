@@ -160,7 +160,7 @@ These concepts are not formal capitalized terms but are clearly defined because 
 
 **Sovereignty signal.** An indication during Context Gathering that the User wants direct ownership over part of the work - a domain preference, an area the User has stressed about, something the User wants full control of, a part described with strong personal language, or an explicit statement that the User intends to do certain work themselves. Sovereignty signals surface organically through the Planner's existing question rounds, are recorded as durable observations, and survive into the Implementation Phase as Memory notes.
 
-**User claim.** The User taking ownership of a Task. Claims may occur during Plan and Spec review at planning time (recorded in the Plan as the assignee) or dynamically during the Implementation Phase via natural language in chat with the Manager or with a Worker for an in-progress Task (User takeover).
+**User claim.** The User taking ownership of a Task. Claims may occur during Plan review at planning time (recorded in the Plan as the assignee), once Tasks have been formed during Plan Analysis, or dynamically during the Implementation Phase via natural language in chat with the Manager or with a Worker for an in-progress Task (User takeover).
 
 **User takeover.** The User stepping into a Worker's chat where a Task is currently being executed and signaling takeover via natural language. The Worker pauses cleanly without writing a partial Task Log and enters a standby collaborator posture for the remainder of the Task.
 

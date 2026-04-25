@@ -57,7 +57,7 @@ This produces a `dist/` directory with bundles per assistant and an `apm-release
 Extract a built bundle into a test project and run an APM Semi session end-to-end:
 
 1. Initiate the Planner and confirm sovereignty signals are detected and recorded in the Memory Index.
-2. Claim Tasks during Plan and Spec review, then run the Manager and verify the Task Brief path.
+2. Claim Tasks during Plan review, then run the Manager and verify the Task Brief path.
 3. Take over an in-progress Worker Task mid-execution and verify the Worker pauses cleanly without writing a partial Task Log.
 4. Trigger a validation failure on User-completed work and verify the collaborating agent iterates within scope and escalates with cleaned-up state when systemic.
 

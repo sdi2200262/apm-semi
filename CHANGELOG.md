@@ -19,7 +19,7 @@ Custom adaptation of [APM v1.0.0](https://github.com/sdi2200262/agentic-project-
 **Added**
 
 - Sovereignty signal detection during Context Gathering. Signals are recorded as durable Memory notes in the Index that the Manager reads during the Implementation Phase.
-- User-claimable Tasks during Plan and Spec review and dynamically during the Implementation Phase.
+- User-claimable Tasks during Plan review and dynamically during the Implementation Phase.
 - User takeover protocol for in-progress Worker Tasks. Workers pause cleanly without writing a partial Task Log and become standby collaborators.
 - Task Briefs - the conversational counterpart to a Task Prompt, presented in chat to the User by the collaborating agent for User-owned Tasks.
 - Validation iteration heuristic with bounded scope, systemic-or-persistent escalation, and cleaned-up state on escalation.
