@@ -38,6 +38,7 @@ After reviewing a Task Log, determine the review outcome.
 
 **Post-investigation outcome:**
 - If no issues are found (false positives, nothing actionable), continue to the next Task(s).
+- If a residual qualifies for inline handling under §2.10 Leftover Handling Standards, handle it yourself directly or offer it to the User per that section instead of dispatching a follow-up.
 - If the Worker needs to retry with refined instructions, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction. If the Worker also left changes uncommitted, note this in the follow-up instructions.
 - If planning documents need modification, proceed to §3.4 Planning Document Modification.
 - If investigation reveals deficiencies in previously-Done work, create a new Task through Plan modification per §2.3 Planning Document Modification Standards. The original Task remains Done; reference it from the new Task, include the discovery context, and specify what needs correction.
@@ -104,6 +105,42 @@ After all Tasks in a Stage are Done, assess whether the Stage's deliverables req
 
 When a report arrives from an agent not listed in Worker tracking, it is a non-APM agent that joined the session independently. These reports do not follow the standard processing flow - there is no Task Log, no Worker tracking entry, and no dispatch state to update. Assess the report on its own terms: what the agent did, whether it affects planning documents or current dispatch. Add a working note to the Tracker recording the agent's identity and contribution. Inform the User of the findings. If follow-up work is needed, assign it per `{GUIDE_PATH:task-assignment}` §2.7 Non-APM Agent Dispatch.
 
+### 2.10 Leftover Handling Standards
+
+When you identify a residual after Task Review or during ongoing coordination - something that, by strict procedure, would warrant a follow-up Task Prompt to a Worker - judge whether the residual qualifies for inline handling instead.
+
+**Qualifying scope:** small surface area, mechanical or near-mechanical, no new design decisions, no new abstractions, no domain logic that belongs to a Worker's specialization. The judgment is in the same family as the existing in-line action allowance for committing on a Worker's behalf when the Worker's Task was successful but changes remain uncommitted - both rely on the same scope criteria.
+
+**Within the qualifying scope**, you may:
+
+- *Handle the residual yourself directly.* No Worker dispatch, no follow-up Task. Record the action as part of the parent Task's working notes during the review-dispatch cycle and surface it to the User as an awareness item alongside other small contained actions per §2.2 Review Outcome Standards.
+- *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty signals captured during planning and recorded in the Index, claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.11 Active Recommendation Standards.
+
+**Beyond the qualifying scope:** dispatch a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction, or escalate to the User for direction when the residual implies a Plan or Spec change per §2.3 Planning Document Modification Standards.
+
+The base behavior (handle-yourself or dispatch-follow-up) operates without User involvement. The offer-to-User branch is an additive path layered on the base.
+
+### 2.11 Active Recommendation Standards
+
+You actively recommend User involvement based on accumulated session signal. Inputs:
+
+- *Sovereignty signals* captured during Context Gathering and recorded as Memory notes in the Index. These persist across Handoffs.
+- *Claim and unclaim history* during the session - what the User has taken on, what they have handed back, at what points.
+- *Observed User behavior patterns* - how strict the User is about ownership in different domains, how the User handles validation (does it themselves vs hands to you), how engaged the User has been with various areas.
+- *Stated positions and concerns* - anything the User explicitly told you that should inform future recommendations (timing constraints on claimed Tasks, specific coordination preferences).
+
+These inputs live as durable Memory notes in the Index per §2.7 Note-Taking Standards so they survive Manager Handoffs.
+
+**Cadence:**
+
+- *At Stage boundaries: actively.* When a Stage completes and before you begin dispatching the next Stage's Tasks, review the upcoming Tasks against the recommendation inputs and proactively offer claims for relevant Tasks. This is the most active recommendation moment.
+- *In-Stage: quietly.* Within a Stage, only volunteer a recommendation when triggered by a concrete signal - a leftover that qualifies for offer-to-User per §2.10 Leftover Handling Standards, a follow-up that qualifies, a finding from Task Review touching an area the User has claimed sovereignty over, or a similar signal. Do not nag.
+
+**Hard constraints:**
+
+- *No auto-claiming.* Never mark a Task as User-owned without explicit User confirmation, even when signals strongly point to it. Recommendations are recommendations.
+- *User decides.* The User can decline, defer, or counter at any time. Accept the decision and proceed.
+
 ---
 
 ## 3. Task Review Procedure
@@ -169,6 +206,7 @@ Perform the following actions:
 2. Assess whether Stage verification is needed per §2.8 Stage Verification Standards. When warranted, verify before proceeding.
 3. Distill working notes per §2.7 Note-Taking Standards: observations with lasting impact on future work become Memory notes in the Index, Stage-specific observations become Stage summary prose. Keep working notes that will be needed in the next Stage. When this review immediately triggers Stage summary (last Task in Stage), observations from this review can be written directly to their destinations rather than first passing through working notes.
 4. Synthesize Stage-level observations and append a Stage summary to the Index per §4.3 Index Format. The Index structure (Memory notes above Stage summaries) enables steps 3 and 4 as a single contiguous edit.
+5. Run an active recommendation review per §2.11 Active Recommendation Standards before beginning the next Stage's dispatches. Review the upcoming Stage's Tasks against the recommendation inputs and proactively offer claims for relevant Tasks. Accept the User's decision on each and proceed - claimed Tasks become User-owned in the Plan and Tracker per §4.1 Task Tracking Format; declined recommendations proceed via standard dispatch.
 
 ---
 
@@ -186,14 +224,16 @@ The Task Tracking section within the Tracker tracks Task statuses, agent assignm
 
 **Stage 2:**
 
-| Task | Status | Agent | Branch |
+| Task | Status | Owner | Branch |
 |------|--------|-------|--------|
 | 2.1 | Done | frontend-agent | |
 | 2.2 | Active | backend-agent | feat/backend-models |
-| 2.3 | Active | frontend-agent | feat/frontend-auth |
+| 2.3 | Active | User | |
 | 2.4 | Waiting: 2.1 | backend-agent | |
 | 2.5 | Ready | frontend-agent | |
 ```
+
+**Owner values:** an AI Worker's agent slug, or `User` for User-owned Tasks. Each Task carries a current owner. Ownership transitions are reflected in the Owner column as they happen - when the User claims a Task that was assigned to a Worker, change the Owner to `User`; when the User unclaims, change it back to the Worker that resumes the Task. Historical claim and unclaim cycles are not tracked here; the Tracker holds current state. History lives in Task Logs and as durable Memory notes.
 
 **Task statuses:** `Ready`, `Active`, `Done`, `Waiting: <deps>`.
 
