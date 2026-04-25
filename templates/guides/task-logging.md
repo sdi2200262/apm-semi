@@ -35,7 +35,21 @@ Status reflects whether the objective was achieved. Select based on end state, n
 
 Use Partial when: validation is ambiguous, important findings emerged that could affect other Tasks, iteration stalled with recurring failures, or approach uncertainty depends on factors outside your scope. Continue iterating (do not log yet) when validation failed but the cause is clear and fixable, no findings require Manager awareness, and progress is being made.
 
-### 2.3 Detail Level Standards
+### 2.3 User-Owned Task Log Standards
+
+When a Task is owned by the User and you are the hosting agent (Worker after a takeover, or Manager hosting a User-claimed Task per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting), you write the Task Log on the User's behalf at the standard Memory path. The log follows the standard format from §4.1 Task Log Format with the following additions, so all downstream consumption (Stage summaries, dependency context for downstream Tasks, Handoffs) works without special-casing.
+
+**Ownership.** Set `owner: User` in YAML frontmatter. When the User took over an in-progress Worker Task, also set `takeover: true` and include a `takeover_point` field naming the step or moment at which the User took over.
+
+**Breakdown of who did what.** Add a body section `## Execution Breakdown` recording which steps the User performed, which you performed (during the takeover before the User stepped in, or during validation iteration after the User reported done), what was attempted, what was kept, and what was reverted. The intent is that anyone reading the log can see the work as the joint effort it was.
+
+**User narrative.** Add a body section `## User Notes` capturing the narrative context the User provided (decisions made, things they noticed, deviations from the brief). Quote or paraphrase faithfully - this is the User's voice in the log.
+
+**Validation breakdown.** In the existing `## Validation` section, distinguish criteria the User checked themselves from criteria you ran on the User's behalf during validation iteration. Note any iteration that occurred and what was kept versus reverted per `{GUIDE_PATH:task-review}` §2.12 Validation Iteration Standards (or `{GUIDE_PATH:task-execution}` §2.7 Validation Iteration Standards when you are the Worker host).
+
+The log is a User-owned Task Log; status, flags, and remaining body sections follow the standard format.
+
+### 2.4 Detail Level Standards
 
 Task Logs serve the Manager's coordination needs, not archival documentation. Ask: does this detail help the Manager understand what was accomplished? Would it affect the Manager's next review decision? Can it be found by reading the referenced artifacts directly?
 
@@ -57,7 +71,8 @@ Perform the following actions:
    - Set `status` per §2.2 Outcome Standards.
    - Set `important_findings` and `compatibility_issues` per §2.1 Flag Assessment Standards.
    - Set `stage`, `task`, `title`, and `agent` from the Task Prompt.
-3. Complete markdown body sections per §4.1 Task Log Format. Always include: Summary, Details, Output, Validation, Issues. Include conditional sections (Compatibility Concerns, Important Findings) only when their corresponding flag is `true`.
+   - For User-owned Task Logs per §2.3 User-Owned Task Log Standards, also set `owner: User` and (when applicable) `takeover: true` with a `takeover_point` field. The Manager writes the log directly when hosting a User-owned Task; the Worker writes the log when the User took over an in-progress Task.
+3. Complete markdown body sections per §4.1 Task Log Format. Always include: Summary, Details, Output, Validation, Issues. Include conditional sections (Compatibility Concerns, Important Findings) only when their corresponding flag is `true`. For User-owned Task Logs, also include `## Execution Breakdown` and `## User Notes` per §2.3 User-Owned Task Log Standards.
 4. Write the Task Log to `log_path`.
 
 ### 3.2 Task Report Delivery
@@ -92,6 +107,9 @@ agent: <agent-slug>
 status: Success | Partial | Failed
 important_findings: true | false
 compatibility_issues: true | false
+owner: <agent-slug> | User                # optional, defaults to agent
+takeover: true                              # optional, present when User took over a Worker Task
+takeover_point: <step or moment>            # optional, accompanies takeover: true
 ---
 ```
 
@@ -99,10 +117,13 @@ compatibility_issues: true | false
 - `stage`: Stage number from the Task Prompt.
 - `task`: Task number from the Task Prompt.
 - `title`: Task title from the Task Prompt.
-- `agent`: Your agent identifier.
+- `agent`: Your agent identifier. For User-owned Task Logs hosted by the Manager, this is the Worker that would have owned the Task (or empty when the Task was claimed at planning with no original Worker).
 - `status`: Task outcome per §2.2 Outcome Standards. `Success`, `Partial`, or `Failed`.
 - `important_findings`: Whether discoveries have implications beyond current Task scope per §2.1 Flag Assessment Standards.
 - `compatibility_issues`: Whether output conflicts with existing systems per §2.1 Flag Assessment Standards.
+- `owner`: Optional. `User` for User-owned Tasks per §2.3 User-Owned Task Log Standards. Defaults to the value of `agent`.
+- `takeover`: Optional. `true` when the User took over an in-progress Worker Task.
+- `takeover_point`: Optional. Accompanies `takeover: true` to name the step or moment at which the User took over.
 
 **Markdown Body Template:**
 
@@ -122,10 +143,18 @@ compatibility_issues: true | false
 - Results or deliverables
 
 ## Validation
-[Description of validation performed and result]
+[Description of validation performed and result. For User-owned Task Logs per §2.3, distinguish criteria the User checked from criteria the hosting agent ran during validation iteration; note any iteration that occurred and what was kept versus reverted.]
 
 ## Issues
 [Specific blockers or errors encountered, or "None"]
+
+## Execution Breakdown
+[Only include for User-owned Task Logs per §2.3]
+[Which steps the User performed, which the hosting agent performed (during takeover before the User stepped in, or during validation iteration after the User reported done), what was attempted, what was kept, what was reverted.]
+
+## User Notes
+[Only include for User-owned Task Logs per §2.3]
+[The narrative context the User provided: decisions made, things they noticed, deviations from the brief. Quote or paraphrase faithfully.]
 
 ## Compatibility Concerns
 [Only include if compatibility_issues: true]
