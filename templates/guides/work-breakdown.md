@@ -86,6 +86,16 @@ The Plan defines how work is organized - Stages, Tasks, Worker assignments, depe
 
 **Self-containedness:** Workers' working context is intentionally scoped to their Task Prompt and `{RULES_FILE}` - the Spec, Plan, and external design artifacts are omitted by design. Standards referencing those documents undermine that scoping. Embed content directly.
 
+**Baseline collaborative rules.** The APM_RULES block always includes a `## Collaborative Execution` section regardless of project context. The User is the project owner and may claim Tasks dynamically; AI agents (Manager and Workers) need standing guidance to handle this correctly. The User does not read the APM_RULES block - these rules are for AI agents only. The baseline section covers, in conditional rule-framed prose:
+
+- *User takeover (Worker side).* When the User signals takeover during Task execution, pause cleanly without writing a partial Task Log, do not report the takeover to the Manager at takeover time, and become a standby collaborator with the execution-level context the Manager does not have. Resume Task work autonomously only when the User unclaims.
+- *User-owned Task hosting (Manager side).* When a Task is owned by the User, deliver a Task Brief in chat instead of dispatching to a Task Bus, hold a standby collaborator posture while the User works, run validation iteration on the User's behalf when the User reports done, and write the Task Log on the User's behalf at the standard Memory path. Continue dispatching independent Worker Tasks in parallel.
+- *Validation iteration.* When validation fails on User-completed work, attempt resolution within bounded scope - small surface area, mechanical or near-mechanical, no new design decisions, no domain logic the User owns. Escalate to the User on systemic or persistent failure, returning the code in cleaned-up state (changes that produced progress kept, exploratory changes reverted; if nothing produced progress, return to the exact state the User delivered).
+- *Leftover handling (Manager side).* When a residual surfaces during review or coordination, judge whether it qualifies for inline handling within the same scope as validation iteration. Within scope, handle the residual directly or offer it to the User. Beyond scope, dispatch a follow-up to the responsible Worker or escalate to the User when the residual implies a Plan or Spec change.
+- *Active recommendations (Manager side).* Recommend User involvement based on accumulated session signal - sovereignty signals from planning, claim and unclaim history, observed behavior patterns, stated positions. Recommend actively at Stage boundaries and quietly in-Stage when triggered by a concrete signal. Never mark a Task as User-owned without explicit User confirmation.
+
+These rules are universal execution-level patterns and apply across all or most coordination decisions. Phrase them conditionally on the work being performed so any agent reading the file applies the right rule to its current context. The full procedures live in the runtime guides; the Rules entries are the standing standards each agent must internalize.
+
 ---
 
 ## 3. Work Breakdown Procedure
@@ -152,9 +162,11 @@ Perform the following actions per §2.5 `{RULES_FILE}` Standards:
    - **From gathered context:** workflow preferences, conventions, or quality requirements from Context Gathering not yet captured in the Spec or the Plan. Version control conventions are excluded - the Manager handles those and appends content to Rules during the start of the Implementation Phase.
    - **Classification:** Separate patterns that apply to all or most Tasks from narrowly Task-specific ones per §2.5 `{RULES_FILE}` Standards. Most projects produce few genuinely universal rules - project-specific constraints and output specifications belong in the Spec or Task guidance even when they apply to multiple Workers.
    - **Existing standards:** what `{RULES_FILE}` already contains; reference rather than duplicate.
+   - **Baseline collaborative rules:** Always include a `## Collaborative Execution` section in the APM_RULES block per §2.5 `{RULES_FILE}` Standards regardless of project context. These rules are for AI agents only - the User does not read the APM_RULES block.
 2. Read `{RULES_FILE}` (or confirm it does not exist), then write the APM_RULES block per §4.3 APM_RULES Block:
    - If file exists: preserve existing content outside block, append APM_RULES block.
    - If creating new: create file with APM_RULES block only.
+   - Always include the baseline `## Collaborative Execution` section covering User takeover (Worker side), User-owned Task hosting (Manager side), validation iteration, leftover handling, and active recommendations per §2.5 `{RULES_FILE}` Standards.
 3. Pause for User review:
    - State Rules are complete.
    - Ask User to review `{RULES_FILE}` for accuracy.
