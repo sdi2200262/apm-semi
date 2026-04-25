@@ -10,7 +10,7 @@ Custom adaptation of [APM v1.0.0](https://github.com/sdi2200262/agentic-project-
 
 ### Architecture
 
-- **User as project owner** - The User can claim any Task at any point and execute it directly. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure.
+- **User-claimable Tasks** - The User can claim any Task at any point and execute it directly. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure.
 - **Standby collaborator posture** - When the User holds a Task, whichever agent has context for it (the Manager for unassigned or Manager-hosted Tasks, the Worker for in-progress Tasks) hosts execution as a standby collaborator: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf. Manager-hosted and Worker-hosted hosting are identical in shape; only the flavor of context the host can offer differs.
 - **Two postures for the Manager** - Toward Workers, the Manager is a dispatcher exactly as in v1. Toward the User, it is a direct collaborator in chat with no message bus between them. The two postures run in parallel.
 

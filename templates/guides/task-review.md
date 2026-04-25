@@ -122,7 +122,7 @@ The base behavior (handle-yourself or dispatch-follow-up) operates without User 
 
 ### 2.11 User-Owned Task Hosting Standards
 
-When a Task is owned by the User, you host its execution in your chat instead of dispatching to a Task Bus. The User is the project owner stepping in - not a Worker. There is no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure for the User.
+When a Task is owned by the User, you host its execution in your chat instead of dispatching to a Task Bus. The User is stepping in to execute the Task themselves - not a Worker. There is no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure for the User.
 
 **Standby collaborator posture.** While the User holds the Task, your role is standby collaborator: available for questions, providing coordination-level context (cross-Worker contracts, Spec ambiguities, dependency implications, Stage timing), running validation when the User returns, and writing the Task Log on the User's behalf. You do not execute Task work autonomously while the User holds the Task. Continue coordinating AI Workers on independent Tasks in parallel.
 

@@ -90,11 +90,11 @@ When a non-APM agent has joined the session and you need to assign follow-up wor
 
 ### 2.8 Task Brief Standards
 
-When a Task is owned by the User, deliver a Task Brief in chat instead of dispatching a Task Prompt to a Task Bus. The Task Brief is the conversational counterpart to a Task Prompt: built from the same three-source synthesis (relevant Spec content, dependency context, and Plan Task fields - Objective, Steps, Guidance, Output, Validation), but written as a brief to the project owner rather than as instructions to an executor.
+When a Task is owned by the User, deliver a Task Brief in chat instead of dispatching a Task Prompt to a Task Bus. The Task Brief is the conversational counterpart to a Task Prompt: built from the same three-source synthesis (relevant Spec content, dependency context, and Plan Task fields - Objective, Steps, Guidance, Output, Validation), but written as a brief to the User rather than as instructions to an executor.
 
 **What changes from Task Prompt to Task Brief:**
 
-- *Audience.* The User is the project owner stepping in - not a Worker. No bus slot, no Worker registry entry, no Rules to follow on the User's behalf, no Handoff procedure. Do not include Workspace branch instructions intended for Workers, Task Iteration guidance directed at iteration limits, Task Logging instructions, or Task Report instructions - these are mechanics for AI Workers writing through the bus. You write the Task Log on the User's behalf per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting.
+- *Audience.* The User is stepping in to execute the Task themselves - not a Worker. No bus slot, no Worker registry entry, no Rules to follow on the User's behalf, no Handoff procedure. Do not include Workspace branch instructions intended for Workers, Task Iteration guidance directed at iteration limits, Task Logging instructions, or Task Report instructions - these are mechanics for AI Workers writing through the bus. You write the Task Log on the User's behalf per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting.
 - *Tone.* Conversational, not instructional. Present the Task as a brief: what is being asked, the design context, dependencies that bear on the work, the deliverable, and the validation criteria. The User decides how to do the work.
 - *Coverage.* The same three-source synthesis still applies. The Brief carries everything the User would need to do the work themselves. Embed Spec content directly. Include dependency context at the same depth a Worker would receive (cross-Worker dependencies still warrant comprehensive context). Reference codebase files with reading instructions where a Worker would have received them.
 

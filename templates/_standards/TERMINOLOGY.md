@@ -10,7 +10,7 @@ Formal terms are always capitalized and carry defined meaning. All other languag
 
 | Term | Definition |
 | ------ | ------------ |
-| **User** | The project owner. Initiates agents, mediates the Message Bus, and may claim any Task at any point to execute it directly as the owner stepping in. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow, and no Handoff procedure. |
+| **User** | Initiates agents, mediates the Message Bus, and may claim any Task at any point to execute it directly. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow, and no Handoff procedure. |
 | **Planner** | Gathers requirements and decomposes them into planning documents. Single instance, no Handoff. |
 | **Manager** | Coordinates and orchestrates the Implementation Phase - assigns Tasks, reviews results, maintains planning documents and memory. Hosts User-owned Tasks in chat. Single role, multiple instances via Handoff. |
 | **Worker** | Executes Tasks assigned by the Manager. Becomes a standby collaborator when the User takes over an in-progress Task. Multiple roles (one per domain), multiple instances each via Handoff. |
