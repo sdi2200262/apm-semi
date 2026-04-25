@@ -253,7 +253,7 @@ A Task Brief is a chat message presented to the User in the Manager's chat. It h
 - *Deliverable.* The expected output.
 - *How we will validate.* The Task's validation criteria, with clear marking of which the User can check themselves and which the Manager will run on the User's return.
 
-**Closing offer.** End the Brief with an invitation: the User may ask any questions, may pause and resume freely, and reports back when done with whatever narrative context is worth capturing and which validation criteria they have already checked.
+**Closing offer.** End the Brief with a natural-language invitation per `{SKILL_PATH:apm-communication}` §2.1 Direct Communication: tell the User you are available for questions and remaining validation while they work, and ask them to report back when finished with what was done, anything notable that came up, and which validation criteria they checked themselves versus which to leave to you. Pausing and resuming freely is fine; unclaiming back to a Worker is also fine and conversational.
 
 ### 4.6 Batch Envelope Format
 

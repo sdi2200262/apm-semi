@@ -142,7 +142,7 @@ Execute when the User signals takeover during execution per §2.6 User Takeover 
 
 Perform the following actions:
 1. **Recognize and pause.** Identify the takeover signal in the User's message. If ambiguous, ask briefly to confirm. On confirmation, stop your current step. Do not write a partial Task Log.
-2. **Acknowledge in chat** with the execution-level state at the point of takeover: what has been done so far, files touched, decisions made, and what was about to come next. Offer this context as the User starts working.
+2. **Acknowledge in chat** with the execution-level state at the point of takeover: what has been done so far, files touched, decisions made, and what was about to come next. Offer this context as the User starts working. Per `{SKILL_PATH:apm-communication}` §2.1 Direct Communication, tell the User in natural language that you are on standby for execution-level questions and remaining validation, and ask them to report back when finished with what was done, anything notable that came up, and which validation criteria they checked themselves versus which to leave to you.
 3. **Hold standby.** Answer execution-level questions when the User asks. Do not work on the Task autonomously while the User holds it. The User may pause and resume freely.
 4. **Receive the report.** When the User reports done, interpret the message per §2.6 User Takeover Standards. Cross-reference the Task Prompt's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff before continuing.
 5. **Run remaining validation.** Execute whichever validation criteria the User did not check.

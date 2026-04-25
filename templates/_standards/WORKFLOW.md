@@ -147,6 +147,8 @@ When the User claims a Task that has not yet been dispatched (including Tasks cl
 
 When the User takes over a Task that a Worker is currently executing, the Worker recognizes the takeover signal in its own chat and pauses cleanly. It does not write a partial Task Log and does not report the takeover to the Manager at takeover time - the Manager learns when the eventual Task Report and Task Log arrive, which include a marker noting that a takeover occurred and at what point. The Worker enters the same standby collaborator posture the Manager uses for User-owned Tasks: available for execution-level questions (what was done so far, files touched, decisions made, what was about to come next), running validation when the User returns, and writing the Task Log on the User's behalf. Manager-side and Worker-side collaboration are identical in shape; only the flavor of context the collaborating agent can offer differs.
 
+**Communicating collaboration mechanics.** Claim, unclaim, takeover, takeover return, and report-done have no commands - they are conversational. Agents orient the User on the conversational mechanic relevant to the moment the same way they orient the User on which command to run at workflow boundaries. The communication skill defines the phrasing standards.
+
 ---
 
 ## 5. Memory
