@@ -8,7 +8,9 @@
 
 APM Semi is an official custom adaptation of [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution. In APM v1, the User mediates messages between fully autonomous AI agents. APM Semi gives the User more direct control by letting them pick up Tasks and execute them themselves while keeping APM's structure and context management.
 
-In APM Semi, Workers are still the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct execution by the User: the User can claim any Task at any point and execute it themselves. When that happens, an AI agent stays on the User's side - answering questions, running validation when the User returns, and writing the Task Log on the User's behalf. Which agent depends on where the User picks the Task up: the Manager, when the Task is claimed during Manager coordination (including Tasks the Plan already assigned to the User), or the Worker assigned to the Task, when the User takes over an in-progress Task in the Worker's chat. In the takeover case, the Worker pauses execution and stays available until the User returns.
+In APM Semi, Workers are still the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct execution by the User: the User can claim any Task at any point and execute it themselves. When that happens, the respective Agent collaborates with the User as needed during their execution of the Task - answering questions, helping with validation, and finally logging on the User's behalf.
+
+The respective Agent is the Manager when the Task is claimed during Manager coordination, including Tasks the Plan already assigned to the User. It is the Worker assigned to the Task when the User takes over mid-execution in the Worker's chat - the Worker pauses execution and collaborates until the User is done.
 
 If the User never claims a Task in a given session, APM Semi behaves identically to APM v1.
 
