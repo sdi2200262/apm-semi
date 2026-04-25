@@ -66,6 +66,8 @@ The Plan defines how work is organized - Stages, Tasks, Worker assignments, depe
 
 **Content placement:** Task-level content - objectives, deliverables, Worker assignments, validation criteria, dependencies, step-by-step guidance. Design decisions across Tasks belong in the Spec; universal execution patterns belong in Rules.
 
+**User as valid assignee:** A Task may be assigned to the User instead of an AI Worker. User-owned Tasks participate in dependency, Stage, and parallel-dispatch logic identically to Worker-owned Tasks. The Worker registry is AI-only; the User is never added there. If the User claiming all Tasks in a Worker's domain leaves that Worker with nothing to do, remove the Worker from the registry.
+
 **Task self-sufficiency:** Each Task must contain enough context for a Worker to execute from a Task Prompt alone per §2.1 Workflow Context.
 
 **Guidance and steps:** When Task guidance involves design decisions already captured in the Spec, reference the Spec section rather than restating the content. The Manager reads both documents and integrates Spec content into the Task Prompt during extraction - restating duplicates work and risks divergence. Guidance adds what the Spec does not cover (domain-specific implementation context, constraints, and patterns). Authoritative User documents follow the same principle - reference by path and section. Steps describe the Worker's sequential operations - the Manager transforms them into actionable instructions enriched with Spec content and guidance.
@@ -134,7 +136,8 @@ Present reasoning under the header **Plan Analysis:** with sub-headers **Domain 
 2. Read `.apm/plan.md`, then write the full Plan per §4.2 Plan Format. Set `title` to the project name (same as Spec) and `modified` to "Plan creation by the Planner." Enrich Task details from reasoning. Ensure every cross-agent dependency is bolded at write time. Include the Dependency Graph in the Plan header.
 3. Pause for User review:
    - State the Plan is complete and the artifact is created. Present a summary to the User: Worker count, Stage count with names and Task counts, total Tasks, dispatch patterns.
-   - Ask User to review the Plan.
+   - Ask User to review the Plan and offer the option to claim any Task directly. Sovereignty signals captured during Context Gathering may make claim candidates obvious; surface them here as a recommendation while making clear the User can claim any Task whether or not it was signaled.
+   - If the User claims one or more Tasks, update each claimed Task's assignee to the User per §4.2 Plan Format, remove any Worker that ends up with no Tasks from the Workers field, and regenerate the Dependency Graph node labels accordingly. Add a Plan note recording which Tasks were User-claimed and any rationale the User provided. If the rationale concerns project-level reasoning rather than work-structure observation, record it instead in the Spec header notes per §4.1 Spec Format and update the Spec.
    - If modifications needed, apply and repeat step 3.
    - If approved, proceed to §3.3 Rules Analysis.
 
@@ -176,7 +179,7 @@ modified: <last modification note>
 
 Below the frontmatter, the document starts with `# APM Spec` followed by two header sections: `## Overview` (3-5 sentences covering project type, core problem, essential scope, and success criteria) and `## Workspace` (project environment from the workspace assessment: directory structure, working repositories, reference repositories, authoritative document locations, and existing `{RULES_FILE}` content). A single horizontal rule separates the header from the design decision content below. No horizontal rules within the content sections - `##` headings provide sufficient visual separation.
 
-- *Planner notes:* Placed immediately after the horizontal rule separator, before content sections. Use the format `> **Notes:** <prose or unordered list>`. These cover the project environment the Manager will encounter per §2.1 Workflow Context - version control observations, workspace constraints, and User preferences that affect execution.
+- *Planner notes:* Placed immediately after the horizontal rule separator, before content sections. Use the format `> **Notes:** <prose or unordered list>`. These cover the project environment the Manager will encounter per §2.1 Workflow Context - version control observations, workspace constraints, and User preferences that affect execution. Sovereignty rationale (why specific work has been claimed by the User at planning time) belongs here when it concerns project-level reasoning. Sovereignty signals themselves - areas the User has signaled wanting ownership over - are recorded in the Memory Index as durable observations the Manager reads during the Implementation Phase, not in Spec notes.
 
 **Content structure:** Free-form below the header. Organize into sections that reflect the project's natural structure - its domains, components, boundaries, or technical concerns. Related design decisions share a section; cross-cutting choices get their own. The Spec should read as a coherent description of what is being built and why, shaped by the project's unique requirements.
 
@@ -205,7 +208,7 @@ Below the frontmatter, the document starts with `# APM Plan` followed by the Pla
 
 **Task Format.** Each Task in the Plan:
 
-*Header:* `### Task <N>.<M>: <Title> - <Domain> Agent`
+*Header:* `### Task <N>.<M>: <Title> - <Domain> Agent` for AI-Worker Tasks, or `### Task <N>.<M>: <Title> - User` for User-owned Tasks.
 
 *Contents:*
 ```markdown
