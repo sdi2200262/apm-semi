@@ -39,7 +39,7 @@ After reviewing a Task Log, determine the review outcome.
 **Post-investigation outcome:**
 - If no issues are found (false positives, nothing actionable), continue to the next Task(s).
 - If a residual qualifies for inline handling under §2.10 Leftover Handling Standards, handle it yourself directly or offer it to the User per that section instead of dispatching a follow-up.
-- If the Worker needs to retry with refined instructions, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction. If the Worker also left changes uncommitted, note this in the follow-up instructions.
+- If the Worker needs to retry with refined instructions, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction. If the Worker also left changes uncommitted, note this in the follow-up instructions.
 - If planning documents need modification, proceed to §3.4 Planning Document Modification.
 - If investigation reveals deficiencies in previously-Done work, create a new Task through Plan modification per §2.3 Planning Document Modification Standards. The original Task remains Done; reference it from the new Task, include the discovery context, and specify what needs correction.
 
@@ -116,7 +116,7 @@ When you identify a residual after Task Review or during ongoing coordination - 
 - *Handle the residual yourself directly.* No Worker dispatch, no follow-up Task. Record the action as part of the parent Task's working notes during the review-dispatch cycle and surface it to the User as an awareness item alongside other small contained actions per §2.2 Review Outcome Standards.
 - *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty signals captured during planning and recorded in the Index, claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.13 Active Recommendation Standards.
 
-**Beyond the qualifying scope:** dispatch a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction, or escalate to the User for direction when the residual implies a Plan or Spec change per §2.3 Planning Document Modification Standards.
+**Beyond the qualifying scope:** dispatch a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction, or escalate to the User for direction when the residual implies a Plan or Spec change per §2.3 Planning Document Modification Standards.
 
 The base behavior (handle-yourself or dispatch-follow-up) operates without User involvement. The offer-to-User branch is an additive path layered on the base.
 
@@ -130,7 +130,7 @@ When a Task is owned by the User, you host its execution in your chat instead of
 
 **Reporting done.** When the User finishes a Task, the User reports back via natural language. The report is expected to include what was done, any narrative context worth capturing (decisions made, things noticed, deviations from the brief), and validation status - which validation criteria the User checked and which the User wants you to handle. Do not enforce a strict report format. Interpret the User's message, cross-reference the Task's validation criteria, and proceed to validation iteration. If the report omits validation status entirely, ask explicitly before proceeding - silent assumption of validation completeness is a defect. Peek at the git diff (or equivalent ground-truth signal) before writing the log so the log accurately reflects what changed even when the User's narrative is incomplete.
 
-**Unclaim.** When the User unclaims a Task they hold, package whatever the User did so far as context into a Task Prompt for the responsible AI Worker per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction (using the same construction principles, with the User's progress as the dependency context). If no Worker was originally assigned (the Task was claimed at planning), pick the best-fit Worker from the registry, possibly with User input. Update Owner accordingly.
+**Unclaim.** When the User unclaims a Task they hold, package whatever the User did so far as context into a Task Prompt for the responsible AI Worker per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction (using the same construction principles, with the User's progress as the dependency context). If no Worker was originally assigned (the Task was claimed at planning), pick the best-fit Worker from the registry, possibly with User input. Update Owner accordingly.
 
 **Already-done Tasks.** A Task already marked Done is not claimable. If the User attempts to claim it, note the Task is complete and ask whether the User wants to revisit anything specific - any revisit goes through standard Plan modification per §2.3 Planning Document Modification Standards.
 
@@ -202,7 +202,7 @@ Perform the following actions:
 1. Review findings from the Task Log per §2.2 Review Outcome Standards. Assess deliverables against the Task's objectives and validation criteria before determining the outcome. If version control is active and the Task was successful but changes remain uncommitted on the Task branch, commit on behalf following the conventions from Rules - no follow-up needed. If everything looks good, skip to step 3. If something needs attention, continue to step 2.
 2. Investigate and determine outcome per §2.2 Review Outcome Standards:
    - If no issues are found, continue to step 3.
-   - If the Worker needs a follow-up, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.4 Follow-Up Task Prompt Construction and continue to step 3.
+   - If the Worker needs a follow-up, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction and continue to step 3.
    - If planning documents need modification, proceed to §3.4 Planning Document Modification (returns to step 3 after completion).
 3. Update the Tracker per §4.1 Task Tracking Format: mark completed Tasks as Done, reassess Waiting Tasks for readiness, update branches. Execute pending merges per §2.5 Merge Standards before reassessing readiness. Assess whether the review yielded note-worthy context and add to working notes - both ephemeral coordination items and durable observations for later distillation. Remove stale working notes. Batch all changes from this review-dispatch cycle into a single Tracker edit.
 4. Assess next action per §2.4 Parallel Coordination Standards:
@@ -239,7 +239,7 @@ Perform the following actions:
 Execute when a User-owned Task becomes Ready, when the User claims a Task dynamically that you have context for, when the User reports done on a Task you are hosting, or when a Worker reports completion of a Task that ended with a User takeover.
 
 Perform the following actions:
-1. **Present the Task Brief.** When a User-owned Task is Ready, build a Task Brief per `{GUIDE_PATH:task-assignment}` §3.5 Task Brief Construction and present it to the User in chat. Update the Tracker per §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
+1. **Present the Task Brief.** When a User-owned Task is Ready, build a Task Brief per `{GUIDE_PATH:task-assignment}` §3.4 Task Brief Construction and present it to the User in chat. Update the Tracker per §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
 2. **Hold standby per §2.11 User-Owned Task Hosting Standards.** Continue coordinating AI Workers on independent Tasks in parallel. Answer questions when the User asks. The User may pause and resume freely.
 3. **Receive the report.** When the User reports done, interpret the message per §2.11 User-Owned Task Hosting Standards. Cross-reference the Task's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff (or equivalent ground-truth signal) before continuing.
 4. **Run remaining validation.** Execute whichever validation criteria the User did not check. When validation passes, continue to step 6.

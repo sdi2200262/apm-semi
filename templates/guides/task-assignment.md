@@ -82,11 +82,25 @@ Worktrees contain only tracked files; if a Worker needs untracked assets, note t
 
 ### 2.6 Delivery Standards
 
-Bus directories and files are created by the Planner during the Planning Phase - do not re-create them. Before writing to a Worker's Task Bus, clear the Worker's Report Bus (`.apm/bus/<agent-slug>/report.md`) via terminal (e.g., `truncate -s 0` or shell redirection). Skip clearing on first Task Prompt to a Worker when no report exists. Read the Task Bus before writing to it per `{SKILL_PATH:apm-communication}` §4 Message Bus Protocol. When dispatching multiple sequential Tasks to the same Worker, send them as a batch in a single Task Bus message per §4.5 Batch Envelope Format.
+Bus directories and files are created by the Planner during the Planning Phase - do not re-create them. Before writing to a Worker's Task Bus, clear the Worker's Report Bus (`.apm/bus/<agent-slug>/report.md`) via terminal (e.g., `truncate -s 0` or shell redirection). Skip clearing on first Task Prompt to a Worker when no report exists. Read the Task Bus before writing to it per `{SKILL_PATH:apm-communication}` §4 Message Bus Protocol. When dispatching multiple sequential Tasks to the same Worker, send them as a batch in a single Task Bus message per §4.6 Batch Envelope Format.
 
 ### 2.7 Non-APM Agent Dispatch
 
 When a non-APM agent has joined the session and you need to assign follow-up work to it, write a plain assignment to its Task Bus - not a full Task Prompt. Include what to do and what to produce, and instruct it to report back. Do not include log paths, logging instructions, or Handoff metadata - non-APM agents do not log to Memory or participate in Worker tracking.
+
+### 2.8 Task Brief Standards
+
+When a Task is owned by the User, deliver a Task Brief in chat instead of dispatching a Task Prompt to a Task Bus. The Task Brief is the conversational counterpart to a Task Prompt: built from the same three-source synthesis (relevant Spec content, dependency context, and Plan Task fields - Objective, Steps, Guidance, Output, Validation), but written as a brief to the project owner rather than as instructions to an executor.
+
+**What changes from Task Prompt to Task Brief:**
+
+- *Audience.* The User is the project owner stepping in - not a Worker. No bus slot, no Worker registry entry, no Rules to follow on the User's behalf, no Handoff procedure. Do not include Workspace branch instructions intended for Workers, Task Iteration guidance directed at iteration limits, Task Logging instructions, or Task Report instructions - these are mechanics for AI Workers writing through the bus. You write the Task Log on the User's behalf per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting.
+- *Tone.* Conversational, not instructional. Present the Task as a brief: what is being asked, the design context, dependencies that bear on the work, the deliverable, and the validation criteria. The User decides how to do the work.
+- *Coverage.* The same three-source synthesis still applies. The Brief carries everything the User would need to do the work themselves. Embed Spec content directly. Include dependency context at the same depth a Worker would receive (cross-Worker dependencies still warrant comprehensive context). Reference codebase files with reading instructions where a Worker would have received them.
+
+**What stays the same:** dependency classification, the three-source synthesis itself, the embed-vs-reference choices for content. The User reads the Brief and works however they choose - no validation criteria are removed, no scope reduction.
+
+**Workspace.** When the project uses version control, ask the User which branch they want to work on - the User may choose a feature branch, the base branch, or a worktree. The Manager does not pre-create branches for User-owned Tasks. The User commits or asks the Manager to commit per the project's commit conventions during Task hosting.
 
 ---
 
@@ -103,7 +117,7 @@ Perform the following actions:
 2. Check whether a pending report would unlock Tasks that combine well with currently Ready Tasks. If waiting costs little, consider it. Otherwise proceed.
 3. Group Ready Tasks by assigned Worker. Form dispatch units per §2.4 Dispatch Standards - assess all three modes (single, batch, parallel) before committing to a dispatch plan.
 4. Assess parallel opportunity: if 2+ dispatch units exist with no unresolved cross-agent dependencies - parallel dispatch.
-5. Formulate dispatch plan: which Workers receive which units, whether parallel. For each Task, continue to per-Task analysis.
+5. Formulate dispatch plan: which Workers receive which units, whether parallel. For each Task, continue to per-Task analysis. For Tasks with Owner `User`, route to §3.4 Task Brief Construction instead of bus dispatch - User-owned Tasks participate in dependency, Stage, and parallel-dispatch logic identically to Worker-owned Tasks; only the delivery mechanism differs.
 
 ### 3.2 Per-Task Analysis
 
@@ -126,14 +140,25 @@ Perform the following actions:
 3. Create a feature branch off the repository's base branch per §2.5 Version Control Standards. For parallel dispatch, create a worktree: `git worktree add .apm/worktrees/<branch-slug> -b <branch-name>`. Include the branch name (sequential) or worktree path (parallel) in the Workspace section.
 4. Record the branch name in the Task row's Branch column when updating the Tracker.
 5. Clear the incoming Report Bus per §2.6 Delivery Standards.
-6. Read the Worker's Task Bus, then write the Task Prompt to it: `.apm/bus/<agent-slug>/task.md`. For batches, use §4.5 Batch Envelope Format.
+6. Read the Worker's Task Bus, then write the Task Prompt to it: `.apm/bus/<agent-slug>/task.md`. For batches, use §4.6 Batch Envelope Format.
 7. Direct the User to the Worker's chat per `{SKILL_PATH:apm-communication}` §2.1 Direct Communication:
    - If the Worker is not yet initialized - direct the User to start a new chat and run `/apm-3-initiate-worker <agent-id>`. The Worker detects the pending Task Prompt during init and begins executing. Only on first dispatch to this Worker.
    - If the Worker is already initialized - direct the User to run `/apm-4-check-tasks` in the Worker's chat.
    - For batch dispatch - summarize what the Worker will receive (number of Tasks, sequential execution).
    - For parallel dispatch - list each Worker with its required action.
 
-### 3.4 Follow-Up Task Prompt Construction
+### 3.4 Task Brief Construction
+
+Execute when a User-owned Task becomes Ready, or when the User claims a Task you currently have context for. Take the User-owned branch instead of bus dispatch.
+
+Perform the following actions:
+1. Run §3.2 Per-Task Analysis as you would for a Worker - read dependencies, classify context depth, extract Spec content, extract Plan Task fields. The three-source synthesis is identical for User-owned Tasks.
+2. Construct the Brief per §4.5 Task Brief Format. Embed Spec content directly. Include dependency context at the same depth a Worker would receive. Drop sections that are bus-and-Worker mechanics: Workspace branch instructions, Task Iteration guidance directed at iteration limits, Task Logging instructions, Task Report instructions per §2.8 Task Brief Standards.
+3. Discuss workspace with the User per §2.8 Task Brief Standards. Ask which branch they want to work on. Do not pre-create a feature branch.
+4. Present the Brief in chat. Update the Tracker per `{GUIDE_PATH:task-review}` §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
+5. Continue per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting from step 2 (standby).
+
+### 3.5 Follow-Up Task Prompt Construction
 
 Execute when the review outcome (per `{GUIDE_PATH:task-review}` §3.3 Review Outcome) determines follow-up is needed.
 
@@ -214,7 +239,23 @@ VC configuration recorded in the Version Control table within the Tracker, with 
 | <repo-name> | <branch-name> | <convention> | <convention> |
 ```
 
-### 4.5 Batch Envelope Format
+### 4.5 Task Brief Format
+
+A Task Brief is a chat message presented to the User in the Manager's chat. It has no YAML frontmatter, no Task Bus file, and no log_path field - the Manager writes the Task Log on the User's behalf at the standard Memory path during hosting.
+
+**Body Sections:**
+
+- *Title.* Conversational header naming the Task (e.g., "Task 2.3 - Refresh the dashboard layout").
+- *What is being asked.* A short framing of the deliverable in plain prose. Not a bulleted Objective in the Worker style.
+- *Design context.* Spec content relevant to this Task, embedded directly per §2.2 Task Prompt Content Standards. Use natural prose - present the design decisions and constraints without coordination-level vocabulary.
+- *Dependencies.* Context from any prior Tasks that bear on this work, at the same depth a Worker would receive (cross-Worker dependencies still warrant comprehensive context). Reference codebase files with reading instructions where a Worker would have received them.
+- *Steps.* Plan steps as a sequence the User may follow or adapt - the User decides how to do the work.
+- *Deliverable.* The expected output.
+- *How we will validate.* The Task's validation criteria, with clear marking of which the User can check themselves and which the Manager will run on the User's return.
+
+**Closing offer.** End the Brief with an invitation: the User may ask any questions, may pause and resume freely, and reports back when done with whatever narrative context is worth capturing and which validation criteria they have already checked.
+
+### 4.6 Batch Envelope Format
 
 When sending multiple Tasks to a Worker in a batch, the Task Bus file uses this structure:
 
