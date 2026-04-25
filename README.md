@@ -1,150 +1,88 @@
-# Agentic Project Management (APM)
+# APM Semi
 
-[![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0) [![npm](https://img.shields.io/npm/v/agentic-pm)](https://www.npmjs.com/package/agentic-pm) [![GitHub Release](https://img.shields.io/github/v/release/sdi2200262/agentic-project-management)](https://github.com/sdi2200262/agentic-project-management/releases)
+[![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
-*Manage complex projects with a team of AI agents, smoothly and efficiently.*
+*A custom APM adaptation for collaborative human-and-agent project execution.*
 
-## What is APM?
+## What is APM Semi?
 
-APM is an open-source framework for managing ambitious software projects with AI assistants. Instead of working in a single, increasingly chaotic chat, APM structures your work into a coordinated system where different AI agents handle planning, coordination, and execution as a team.
+APM Semi is an official custom adaptation of [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution. It sits between APM v1, where the User mediates messages between fully autonomous AI agents, and [APM Auto](https://github.com/sdi2200262/apm-auto), where the Manager autonomously dispatches subagents end-to-end.
 
-What distinguishes this from subagent-based approaches: the agents doing implementation work are not restarted fresh on each task. They accumulate working context across assignments - building familiarity with their domain as the project progresses. When context fills, a structured Handoff transfers that working knowledge to a fresh instance rather than discarding it.
+In APM Semi, the User is the project owner. Workers are the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct ownership: the User can claim any Task at any point and execute it themselves. Whichever agent currently has context for that Task - the Manager for unassigned or Manager-hosted Tasks, the Worker for in-progress Tasks - hosts the User's execution as a standby collaborator: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf.
 
-As conversations grow, AI context degrades. The assistant loses track of requirements, produces bad code, and hallucinates details. For substantial projects, this makes sustained progress nearly impossible.
+If the User never claims a Task in a given session, APM Semi behaves identically to APM v1.
 
-To address this, APM coordinates three specialized agent types, each operating in its own context with only the information it needs:
+## Installation
 
-- **Planner** - Conducts structured project discovery and decomposes requirements into three planning documents: a Spec (what to build), a Plan (how work is organized), and Rules (how work is performed).
-- **Manager** - Coordinates execution by assigning Tasks to Workers, reviewing completed work, and maintaining project state. Operates on execution summaries rather than raw code.
-- **Workers** - Execute Tasks within defined domains (frontend, backend, API, etc.). Each Worker receives a self-contained Task Prompt for each assignment, executes, validates, logs to memory, and reports back.
-
-Project state lives in structured files outside any agent's context. Because of this, when an agent reaches its limits, you can Handoff its working knowledge to a fresh instance of that same agent in a new chat. This also allows completed sessions to be archived and their context carried forward to new ones.
-
-You mediate every exchange between agents by running commands in the appropriate conversation. This keeps every step visible and auditable, letting you set the pace and review work at each stage. Each agent tells you exactly what to run, in which conversation, and what to do next.
-
-<p align="center">
-  <img src="assets/apm-social-card.png" alt="Agentic Project Management" width="800"/>
-</p>
-
-## What a Session Looks Like
-
-You start the Planner with an initiation command and it asks you structured questions while reading through your codebase - you can correct, steer, add context, and sign off on its understanding. That conversation produces three planning documents that govern everything that follows.
-
-From there it's simple: the Manager coordinates execution using the planning documents and tells you what command to run next and where, you run it in the right conversation, and work gets done. One command delivers a task to a Worker. Another brings the Worker's report back to the Manager. At each step you can proceed, iterate, adjust, or redirect.
-
-As the project grows, Workers build up focused working knowledge of their domains. When one fills its context, you run a Handoff command and the next instance picks up without gaps. The same applies to the Manager.
-
-## Who This Is For
-
-APM is for people who build with AI agents and own what they ship. Delivering each message between agents is a built-in checkpoint; you see every task assignment before it reaches a Worker and every result before the Manager acts on it. Workers run in separate conversations, giving you full visibility into their work and room to interact, redirect, or course-correct at any point. The workflow is transparent by design.
-
-## Quick Start
-
-APM supports Claude Code, Codex CLI, Cursor, GitHub Copilot, Gemini CLI, and OpenCode.
-
-Install the CLI:
+Navigate to your project directory, initialize through the `agentic-pm` CLI:
 
 ```bash
 npm install -g agentic-pm
+apm custom -r sdi2200262/apm-semi
 ```
 
-Navigate to your project directory and initialize:
-
-```bash
-apm init
-```
-
-Select your AI assistant when prompted. The CLI installs commands, guides, skills, and project artifact templates into your workspace.
-
-Next, open your AI assistant and run:
+Open your AI assistant and start planning:
 
 ```
 /apm-1-initiate-planner
 ```
 
-You can also provide context about what you want to build:
-```
-/apm-1-initiate-planner I want you to build Claude Opus 5. Make no mistakes.
-```
+The Planner collaborates with you through project discovery and creates the planning documents. During discovery it listens for sovereignty signals - areas you want direct ownership over - alongside its existing focuses, and you can claim Tasks during Plan and Spec review. Once approved, open a new chat and run `/apm-2-initiate-manager` to begin the Implementation Phase.
 
-The Planner collaborates with you through project discovery and creates the planning documents for you to review. Once approved, it guides you to open a new conversation and run `/apm-2-initiate-manager` to begin coordinated execution. From there, each agent directs you through the workflow step by step.
+## How It Works
 
-For the full walkthrough, see the [Getting Started](https://agentic-project-management.dev/docs/getting-started) guide.
+APM Semi inherits the APM v1 architecture: the three-agent model (Planner, Manager, Workers), the two-phase workflow (Planning, Implementation), the Message Bus, the planning documents (Spec, Plan, Rules), the Memory system (Tracker, Index, Task Logs, Stage summaries), the Handoff system, the recovery command, and the Ad-Hoc subagent dispatch.
+
+The collaborative layer adds:
+
+- **Sovereignty signal detection** during Context Gathering. Signals are recorded as durable Memory notes in the Index that the Manager reads during the Implementation Phase.
+- **User-claimable Tasks** during Plan and Spec review and dynamically at any point during the Implementation Phase. The User can also take over an in-progress Worker Task by signaling in the Worker's chat.
+- **Task Briefs** in chat instead of Task Prompts on the bus when the Manager hosts a User-owned Task. The Brief carries the same content as a Task Prompt, written conversationally to the project owner rather than as instructions to an executor.
+- **Standby collaborator posture** for the hosting agent (Manager or Worker). The agent does not work the Task autonomously while the User holds it; it is available for questions, runs validation when the User returns, and writes the Task Log on the User's behalf.
+- **Validation iteration** with bounded scope and systemic-or-persistent escalation. When validation fails on User-completed work, the hosting agent attempts to resolve within scope and escalates with cleaned-up code state if the failure is architectural, design-level, or not resolving across attempts.
+- **Leftover handling** by the Manager. Small mechanical residuals after Task Review can be handled inline or offered to the User instead of always dispatching a follow-up.
+- **Active recommendations** from the Manager based on accumulated session signal: actively at Stage boundaries, quietly in-Stage. The Manager never marks a Task as User-owned without explicit confirmation.
+
+## Trade-offs
+
+APM Semi is an additive overlay on APM v1. It loses nothing if you do not claim Tasks; it adds collaborative ownership when you do.
+
+| | APM Semi | Official APM |
+|---|---|---|
+| **User role** | Project owner; can claim and execute any Task | Mediator between agents |
+| **Worker model** | Same as v1; Workers execute dispatched Tasks | Workers execute dispatched Tasks |
+| **Task Brief** | Manager presents Task Briefs in chat for User-owned Tasks | No equivalent |
+| **Validation iteration** | Hosting agent corrects within scope, escalates on systemic failures | Worker iterates within scope, returns Partial when stalled |
+| **Leftover handling** | Manager can handle inline within scope, offer to User, or dispatch | Manager dispatches a follow-up |
+| **Active recommendations** | Manager surfaces recommendations at Stage boundaries and on signal | None |
+| **Platforms** | Same six as v1 | Six platforms supported |
+
+## Commands
+
+APM Semi keeps the v1 command surface unchanged. Claim, unclaim, takeover, takeover return, and report-done are all conversational and use natural language.
+
+| # | Command | Agent | Purpose |
+|---|---------|-------|---------|
+| 1 | `/apm-1-initiate-planner` | Planner | Planning Phase |
+| 2 | `/apm-2-initiate-manager` | Manager | Implementation Phase |
+| 3 | `/apm-3-initiate-worker` | Worker | Worker initialization |
+| 4 | `/apm-4-check-tasks` | Worker | Task Bus check |
+| 5 | `/apm-5-check-reports` | Manager | Report Bus check |
+| 6 | `/apm-6-handoff-manager` | Manager | Manager Handoff |
+| 7 | `/apm-7-handoff-worker` | Worker | Worker Handoff |
+| 8 | `/apm-8-summarize-session` | Standalone | Session summary and archival |
+| 9 | `/apm-9-recover` | Manager or Worker | Reconstruct context after compaction |
 
 ## Documentation
 
-Full documentation is available at [agentic-project-management.dev](https://agentic-project-management.dev):
-
-- **[Introduction](https://agentic-project-management.dev/docs/introduction)** - What APM is and how it works
-- **[Getting Started](https://agentic-project-management.dev/docs/getting-started)** - Installation through first task cycle
-- **[Agent Types](https://agentic-project-management.dev/docs/agent-types)** - Planner, Manager, and Worker roles
-- **[Agent Orchestration](https://agentic-project-management.dev/docs/agent-orchestration)** - Communication, coordination, Memory, and Handoff mechanics
-- **[Workflow Overview](https://agentic-project-management.dev/docs/workflow-overview)** - Every procedure in detail
-
-The site also covers advanced topics like how APM's prompt and context engineering works under the hood, design principles behind the multi-agent coordination, tips and tricks for model selection and cost optimization, troubleshooting, and customization.
-
-## CLI
-
-| Command | Description |
-|---------|-------------|
-| `apm init` | Initialize with official releases |
-| `apm custom` | Install from custom repositories |
-| `apm update` | Update to latest compatible version |
-| `apm archive` | Archive current session or manage archives |
-| `apm add` / `apm remove` | Add or remove assistant(s) |
-| `apm status` | Show installation state |
-
-See the [CLI Guide](https://agentic-project-management.dev/docs/cli) for full details.
-
-## Customization
-
-APM supports custom repositories for teams that want to modify the workflow. Fork the repo (for upstream sync) or use "Use this template" (for a clean start), adjust templates, build, release, and install with `apm custom -r owner/repo`. A [customization skill](skills/apm-customization/) is included to guide AI agents through the process.
-
-See the [Customization Guide](https://agentic-project-management.dev/docs/customization-guide) for details.
-
-### APM Auto
-
-[APM Auto](https://github.com/sdi2200262/apm-auto) is an official custom adaptation of APM built for Claude Code. It replaces the user-mediated Worker model with autonomous subagent dispatch - the Manager spawns ephemeral subagents via `Agent()` to execute Tasks, reviews their output, and continues without requiring you to shuttle messages between chats. Best for prototyping, fast execution, and simpler projects.
-
-```bash
-apm custom -r sdi2200262/apm-auto
-```
-
-## APM Assist
-
-The [`apm-assist`](skills/apm-assist/) skill turns your AI assistant into an APM-aware helper. Install it into any project and your assistant can explain how APM works, answer questions by reading the live documentation, detect your installation state and version, and guide migration from v0.5.x. It works with any supported platform.
-
-Give this to your AI assistant to handle installation:
-
-```
-Install the apm-assist skill into this project. It is a general-purpose assistant skill for the Agentic Project Management (APM) framework that explains concepts, answers questions from the live documentation, detects installed versions and analyzes sessions, and guides migration from older versions to v1.
-
-Installation instructions and platform-specific paths are in the standalone skills README:
-https://github.com/sdi2200262/agentic-project-management/blob/main/skills/README.md
-```
-
-## Migrating from v0.5.x
-
-v1.0.0 is a ground-up redesign - the workflow, file structure, CLI, and agent roles all changed significantly. The pre-v1 codebase is preserved on the [`v0.5.x`](https://github.com/sdi2200262/agentic-project-management/tree/v0.5.x) branch for reference.
-
-The [Troubleshooting Guide](https://agentic-project-management.dev/docs/troubleshooting-guide#migrating-from-v05x) documents the recommended migration procedure. The `apm-assist` skill above can also walk you through it interactively.
+For the full APM workflow documentation, see [agentic-project-management.dev](https://agentic-project-management.dev). APM Semi shares APM's core concepts (planning documents, Stages, Tasks, Memory, Handoff) with the collaborative-execution layer added on top.
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Report bugs or suggest features via [GitHub Issues](https://github.com/sdi2200262/agentic-project-management/issues). Reach out on Discord: `cobuter_man`.
-
-## Versioning
-
-CLI and template releases version independently but share major version for compatibility. See [VERSIONING.md](VERSIONING.md) for details.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Report bugs or suggest features via [GitHub Issues](https://github.com/sdi2200262/apm-semi/issues).
 
 ## License
 
-Licensed under the **Mozilla Public License 2.0 (MPL-2.0)**. APM is free for all uses including commercial. Improvements to core APM files must be shared back with the community. See [LICENSE](LICENSE) for full details.
+Licensed under the **Mozilla Public License 2.0 (MPL-2.0)**. See [LICENSE](LICENSE) for full details.
 
-Versions prior to v0.4.0 were released under the MIT license. The license was updated to MPL-2.0 starting with v0.4.0.
-
-<p align="center">
-  <a href="https://github.com/sdi2200262" target="_blank">
-    <img src="assets/cobuter-man.png" alt="CobuterMan" width="150"/>
-  </a>
-</p>
+Based on [Agentic Project Management](https://github.com/sdi2200262/agentic-project-management) by [CobuterMan](https://github.com/sdi2200262).

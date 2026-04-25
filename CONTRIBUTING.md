@@ -1,137 +1,81 @@
-# Contributing to Agentic Project Management (APM)
+# Contributing to APM Semi
 
-Thank you for considering contributing to APM! Your contributions help build a better framework for AI-assisted project management.
+Thank you for considering contributing to APM Semi! This adaptation extends APM v1 with collaborative human-and-agent execution, and contributions help refine that overlay.
 
 ## Ways to Contribute
 
-### Reporting Bugs & Workflow Issues
+### Reporting Bugs and Workflow Issues
 
-- **Search existing issues** first: [GitHub Issues](https://github.com/sdi2200262/agentic-project-management/issues)
-- **For new bug reports**, include:
-  - APM CLI version (run `apm --version` or `npm list -g agentic-pm`)
-  - Node.js and npm versions (run `node --version` and `npm --version`)
-  - AI assistant used (Claude Code, Cursor, Copilot, Gemini CLI, or OpenCode)
-  - Agent type experiencing issues (Planner, Manager, or Worker)
-  - Step-by-step reproduction of the issue (if possible, otherwise a detailed description)
+- Search existing issues first: [GitHub Issues](https://github.com/sdi2200262/apm-semi/issues)
+- For new bug reports, include:
+  - The AI assistant used (Claude Code, Cursor, Copilot, Gemini CLI, OpenCode, or Codex CLI)
+  - The agent role experiencing the issue (Planner, Manager, or Worker)
+  - Whether the User had claimed a Task at the time and which (if any)
+  - Step-by-step reproduction
   - Expected vs actual behavior
 
-### Suggesting Features & Improvements
+### Suggesting Improvements
 
-- Workflow improvements: procedures, coordination patterns, memory system optimizations
-- Documentation improvements: clearer explanations, additional examples, missing use cases
-- Platform support: better integration with supported assistants
-- Build system: placeholder additions, platform-specific enhancements
+- Refinements to the collaborative-execution behaviors: sovereignty signal detection, Task Brief construction, validation iteration, leftover handling, active recommendations
+- Edge cases in claim and unclaim flows, takeover handling, or User-owned Task Logging
+- Documentation improvements: clearer explanations, additional examples
+- Platform-specific issues across the six supported assistants
 
-### High-Priority Areas
+### Template Standards
 
-**Workflow Testing & Feedback**
-- Run APM sessions on real projects and report issues via [GitHub Issues](https://github.com/sdi2200262/agentic-project-management/issues)
-- Test across different assistants and model combinations
-- Identify edge cases in coordination, Handoff, and session continuation
+The template authoring standards live in `templates/_standards/`:
 
-**Template Standards**
-- Help improve the template authoring standards in `templates/_standards/`
-- Resources: WORKFLOW.md, TERMINOLOGY.md, STRUCTURE.md, WRITING.md
-- Contributions needed: compliance findings, writing improvements, structural refinements
+- `WORKFLOW.md` - The formal workflow specification. Source of truth for behavior. Any change to coordination patterns must be reflected here first, then propagated to runtime files.
+- `TERMINOLOGY.md` - Formal vocabulary and defined concepts.
+- `STRUCTURE.md` - Structural standards for each file type.
+- `WRITING.md` - Writing patterns, tone, formatting.
 
-**Standalone Skills**
-- The `skills/` directory contains standalone skills installed independently from APM bundles
-- Current skills: [apm-assist](skills/apm-assist/) (APM assistant, migration, docs), [apm-customization](skills/apm-customization/) (repo customization)
-- Contributions welcome for new standalone skills that complement the APM workflow
+Contributions to these files affect every runtime template downstream.
 
-### Community Contributions
+## Development
 
-- Share adaptations: domain-specific customizations via custom repositories
-- Best practices: cost optimization strategies, effective coordination patterns
-- Case studies: real project examples using APM
+### Repository Structure
 
-### Community Extensions
+- `templates/` - Source files that become the APM Semi installation. Commands, guides, skills, agent definitions, and artifact templates.
+- `templates/_standards/` - Development-time specifications. Not included in builds.
+- `build/` - Build system that processes templates into platform-specific bundles.
+- `skills/apm-customization/` - Standalone skill for AI agents helping with further customization of this repository.
 
-APM officially supports Claude Code, Codex CLI, Cursor, GitHub Copilot, Gemini CLI, and OpenCode. For other assistants (e.g. Windsurf, Kilo Code, Roo Code), community members may develop and maintain unofficial extensions.
+APM Semi installs via the official `agentic-pm` CLI; this repository does not ship its own CLI source.
 
-Community extensions are not officially supported, may lag behind releases, and should be tested thoroughly before use. If you're interested in developing or maintaining an extension, please open an issue to discuss.
-
-## Contribution Process
-
-### Setting Up Your Development Environment
-
-1. **Fork and clone the repository:**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/agentic-project-management.git
-   cd agentic-project-management
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Create a feature branch:**
-   ```bash
-   git checkout -b feature/description-of-change
-   ```
-
-### Making Changes
-
-APM uses a build system that processes source templates into platform-specific bundles. Understanding where to make changes is important:
-
-#### File Locations
-
-- **Templates (commands, guides, skills, agents):** Edit files in `templates/`. This is the core deliverable. All template changes must comply with `templates/_standards/`.
-- **Build system:** Edit files in `build/` for processors, config, and generators.
-- **CLI source:** Edit files in `src/` for CLI command behavior.
-- **Standalone skills:** Edit files in `skills/` for independently installable skills.
-- **Documentation:** Docs live in a separate repository: [apm-website](https://github.com/sdi2200262/apm-website) (`docs/` directory). Video walkthroughs covering the v1 workflow are needed. See the apm-website README for details.
-
-**Important:** Template changes follow a top-down propagation. Workflow changes start in `WORKFLOW.md`, then propagate to affected commands, guides, and skills. See the change propagation rules in [CLAUDE.md](CLAUDE.md).
-
-#### Building
-
-After modifying files in `templates/` or `build/`, run:
+### Building Locally
 
 ```bash
+npm install
 npm run build:release
 ```
 
-This processes templates and creates platform-specific bundles in `dist/`.
+This produces a `dist/` directory with bundles per assistant and an `apm-release.json` manifest.
 
-### Testing Your Changes
+### Testing Changes
 
-**For template changes** (`templates/`):
-- Run `npm run build:release` to verify the build completes
-- Test with actual AI assistants in a real project
-- Include example interactions or observations in your PR to speed review
+Extract a built bundle into a test project and run an APM Semi session end-to-end:
 
-**For CLI or build system changes** (`src/` or `build/`):
-- Run `npm run build:release` to verify build output
-- Test CLI commands manually
-- Verify generated output in `dist/` is correct
+1. Initiate the Planner and confirm sovereignty signals are detected and recorded in the Memory Index.
+2. Claim Tasks during Plan and Spec review, then run the Manager and verify the Task Brief path.
+3. Take over an in-progress Worker Task mid-execution and verify the Worker pauses cleanly without writing a partial Task Log.
+4. Trigger a validation failure on User-completed work and verify the hosting agent iterates within scope and escalates with cleaned-up state when systemic.
 
-### Pull Requests
+### Releasing
 
-1. Ensure your changes are tested.
-2. Commit with clear messages following the conventions in [CLAUDE.md](CLAUDE.md).
-3. Push your branch and create a Pull Request with a clear description.
-4. Reference related issues if applicable.
-5. Include test instructions for template changes.
+After making changes:
 
-### Versioning Considerations
+1. Build with `npm run build:release`.
+2. Test a bundle locally.
+3. Tag the release.
+4. Create a GitHub Release attaching the ZIP bundles and `apm-release.json`.
 
-APM uses a decoupled versioning system where the CLI and templates version independently but share the same major version number. See [VERSIONING.md](VERSIONING.md) for details.
+The CLI reads `apm-release.json` to discover available assistants. Users install with:
 
-## License Requirements
+```bash
+apm custom -r sdi2200262/apm-semi
+```
 
-APM uses Mozilla Public License 2.0 (MPL-2.0). By contributing, you agree that:
-- Your contributions will be licensed under MPL-2.0
-- Improvements to core APM files will remain open source
-- Proper attribution is maintained
+## License
 
-## Questions & Discussion
-
-- Technical questions: open a GitHub issue
-- General inquiries: reach out on Discord at `cobuter_man`
-- Collaboration: mention @sdi2200262 in relevant issues or PRs
-
----
-
-Your contributions help make APM better for everyone. Thank you for being part of the community!
+By contributing, you agree that your contributions will be licensed under the Mozilla Public License 2.0.
