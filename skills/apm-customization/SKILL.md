@@ -45,13 +45,10 @@ Explore the repository to understand the layout. The key directories are:
 - `TERMINOLOGY.md` - Formal vocabulary and defined concepts
 - `STRUCTURE.md` - Structural standards for each file type
 - `WRITING.md` - Writing patterns, tone, formatting
-- `NOTES.md` - Development notes and research findings for the official repository. Internal development doc, not relevant to custom repos unless the User has added their own entries.
 
 **`build/`** - The build system that processes templates into platform-specific bundles. `build-config.json` defines the supported targets (assistants) and their directory layouts.
 
-**`src/`** - The `agentic-pm` CLI source code. Changes here affect the CLI tool itself, not the templates.
-
-**`skills/`** - Standalone skills (like this one) that are not part of the main APM bundles.
+**`skills/`** - Standalone skills (like this one) that are not part of the main APM bundles. APM Semi installs via the official `agentic-pm` CLI and does not ship its own CLI source.
 
 ---
 
@@ -115,10 +112,6 @@ When adding a new guide, skill, command, or agent:
 ### Build Configuration Changes
 
 If adding a new target (assistant), modify `build/build-config.json` to add the target definition with its directories, format, and platform-specific values. Explore existing targets as examples.
-
-### CLI Changes
-
-Changes to `src/` affect the CLI tool. These follow different conventions defined in `src/_standards/CLI.md` and require their own release cycle (npm publish, separate from template releases).
 
 ---
 
