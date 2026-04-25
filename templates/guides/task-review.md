@@ -255,7 +255,7 @@ When a Worker-completed report arrives with a takeover marker noting the User to
 
 ### 4.1 Task Tracking Format
 
-The Task Tracking section within the Tracker tracks Task statuses, agent assignments, and branch state per Stage. Update after each review cycle.
+The Task Tracking section within the Tracker tracks Task statuses, ownership, and branch state per Stage. Update after each review cycle.
 
 **Location:** `## Task Tracking` section of `.apm/tracker.md`.
 
