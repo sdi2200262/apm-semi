@@ -120,9 +120,9 @@ When you identify a residual after Task Review or during ongoing coordination - 
 
 The base behavior (handle-yourself or dispatch-follow-up) operates without User involvement. The offer-to-User branch is an additive path layered on the base.
 
-### 2.11 User-Owned Task Hosting Standards
+### 2.11 User-Owned Task Collaboration Standards
 
-When a Task is owned by the User, you host its execution in your chat instead of dispatching to a Task Bus. The User is stepping in to execute the Task themselves - not a Worker. There is no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure for the User.
+When a Task is owned by the User, you collaborate with the User on it in your chat instead of dispatching to a Task Bus. The User is stepping in to execute the Task themselves - not a Worker. There is no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure for the User.
 
 **Standby collaborator posture.** While the User holds the Task, your role is standby collaborator: available for questions, providing coordination-level context (cross-Worker contracts, Spec ambiguities, dependency implications, Stage timing), running validation when the User returns, and writing the Task Log on the User's behalf. You do not execute Task work autonomously while the User holds the Task. Continue coordinating AI Workers on independent Tasks in parallel.
 
@@ -234,14 +234,14 @@ Perform the following actions:
 4. Synthesize Stage-level observations and append a Stage summary to the Index per §4.3 Index Format. The Index structure (Memory notes above Stage summaries) enables steps 3 and 4 as a single contiguous edit.
 5. Run an active recommendation review per §2.13 Active Recommendation Standards before beginning the next Stage's dispatches. Review the upcoming Stage's Tasks against the recommendation inputs and proactively offer claims for relevant Tasks. Accept the User's decision on each and proceed - claimed Tasks become User-owned in the Plan and Tracker per §4.1 Task Tracking Format; declined recommendations proceed via standard dispatch.
 
-### 3.6 User-Owned Task Hosting
+### 3.6 User-Owned Task Collaboration
 
-Execute when a User-owned Task becomes Ready, when the User claims a Task dynamically that you have context for, when the User reports done on a Task you are hosting, or when a Worker reports completion of a Task that ended with a User takeover.
+Execute when a User-owned Task becomes Ready, when the User claims a Task dynamically that you have context for, when the User reports done on a Task you are collaborating on, or when a Worker reports completion of a Task that ended with a User takeover.
 
 Perform the following actions:
 1. **Present the Task Brief.** When a User-owned Task is Ready, build a Task Brief per `{GUIDE_PATH:task-assignment}` §3.4 Task Brief Construction and present it to the User in chat. Update the Tracker per §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
-2. **Hold standby per §2.11 User-Owned Task Hosting Standards.** Continue coordinating AI Workers on independent Tasks in parallel. Answer questions when the User asks. The User may pause and resume freely.
-3. **Receive the report.** When the User reports done, interpret the message per §2.11 User-Owned Task Hosting Standards. Cross-reference the Task's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff (or equivalent ground-truth signal) before continuing.
+2. **Hold standby per §2.11 User-Owned Task Collaboration Standards.** Continue coordinating AI Workers on independent Tasks in parallel. Answer questions when the User asks. The User may pause and resume freely.
+3. **Receive the report.** When the User reports done, interpret the message per §2.11 User-Owned Task Collaboration Standards. Cross-reference the Task's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff (or equivalent ground-truth signal) before continuing.
 4. **Run remaining validation.** Execute whichever validation criteria the User did not check. When validation passes, continue to step 6.
 5. **Iterate on validation failure per §2.12 Validation Iteration Standards.** Within bounded scope, attempt resolution. Escalate to the User on systemic or persistent failure with cleaned-up state. After escalation, the User decides whether to continue iterating themselves (return to step 2 standby) or hand back with new direction (resume from step 4).
 6. **Write the Task Log on the User's behalf** per `{GUIDE_PATH:task-logging}` User-owned Task Log additions. Capture ownership, takeover marker if applicable, breakdown of who did what during execution and validation, and the User's narrative context. The log lives at the standard Memory path.

@@ -11,7 +11,7 @@ Custom adaptation of [APM v1.0.0](https://github.com/sdi2200262/agentic-project-
 ### Architecture
 
 - **User-claimable Tasks** - The User can claim any Task at any point and execute it directly. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure.
-- **Standby collaborator posture** - When the User holds a Task, whichever agent has context for it (the Manager for unassigned or Manager-hosted Tasks, the Worker for in-progress Tasks) hosts execution as a standby collaborator: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf. Manager-hosted and Worker-hosted hosting are identical in shape; only the flavor of context the host can offer differs.
+- **Standby collaborator posture** - When the User picks up a Task during Manager coordination (including Tasks already assigned to the User in the Plan), the Manager is the collaborating agent. When the User takes over a Task mid-execution in a Worker's chat, that Worker pauses and is the collaborating agent. Either way, the collaborating agent stays on standby: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf. The two cases are identical in shape; only the flavor of context the collaborating agent can offer differs.
 - **Two postures for the Manager** - Toward Workers, the Manager is a dispatcher exactly as in v1. Toward the User, it is a direct collaborator in chat with no message bus between them. The two postures run in parallel.
 
 ### Changes from Official APM
@@ -21,7 +21,7 @@ Custom adaptation of [APM v1.0.0](https://github.com/sdi2200262/agentic-project-
 - Sovereignty signal detection during Context Gathering. Signals are recorded as durable Memory notes in the Index that the Manager reads during the Implementation Phase.
 - User-claimable Tasks during Plan and Spec review and dynamically during the Implementation Phase.
 - User takeover protocol for in-progress Worker Tasks. Workers pause cleanly without writing a partial Task Log and become standby collaborators.
-- Task Briefs - the conversational counterpart to a Task Prompt, presented in chat to the User by the hosting agent for User-owned Tasks.
+- Task Briefs - the conversational counterpart to a Task Prompt, presented in chat to the User by the collaborating agent for User-owned Tasks.
 - Validation iteration heuristic with bounded scope, systemic-or-persistent escalation, and cleaned-up state on escalation.
 - Leftover handling heuristic for Manager-side residuals: handle inline within scope, offer to the User, dispatch to a Worker, or escalate.
 - Active recommendation behavior: actively at Stage boundaries and quietly in-Stage based on accumulated session signal. Manager never marks a Task as User-owned without explicit confirmation.

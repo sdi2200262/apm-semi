@@ -94,13 +94,13 @@ When a Task is owned by the User, deliver a Task Brief in chat instead of dispat
 
 **What changes from Task Prompt to Task Brief:**
 
-- *Audience.* The User is stepping in to execute the Task themselves - not a Worker. No bus slot, no Worker registry entry, no Rules to follow on the User's behalf, no Handoff procedure. Do not include Workspace branch instructions intended for Workers, Task Iteration guidance directed at iteration limits, Task Logging instructions, or Task Report instructions - these are mechanics for AI Workers writing through the bus. You write the Task Log on the User's behalf per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting.
+- *Audience.* The User is stepping in to execute the Task themselves - not a Worker. No bus slot, no Worker registry entry, no Rules to follow on the User's behalf, no Handoff procedure. Do not include Workspace branch instructions intended for Workers, Task Iteration guidance directed at iteration limits, Task Logging instructions, or Task Report instructions - these are mechanics for AI Workers writing through the bus. You write the Task Log on the User's behalf per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Collaboration.
 - *Tone.* Conversational, not instructional. Present the Task as a brief: what is being asked, the design context, dependencies that bear on the work, the deliverable, and the validation criteria. The User decides how to do the work.
 - *Coverage.* The same three-source synthesis still applies. The Brief carries everything the User would need to do the work themselves. Embed Spec content directly. Include dependency context at the same depth a Worker would receive (cross-Worker dependencies still warrant comprehensive context). Reference codebase files with reading instructions where a Worker would have received them.
 
 **What stays the same:** dependency classification, the three-source synthesis itself, the embed-vs-reference choices for content. The User reads the Brief and works however they choose - no validation criteria are removed, no scope reduction.
 
-**Workspace.** When the project uses version control, ask the User which branch they want to work on - the User may choose a feature branch, the base branch, or a worktree. The Manager does not pre-create branches for User-owned Tasks. The User commits or asks the Manager to commit per the project's commit conventions during Task hosting.
+**Workspace.** When the project uses version control, ask the User which branch they want to work on - the User may choose a feature branch, the base branch, or a worktree. The Manager does not pre-create branches for User-owned Tasks. The User commits or asks the Manager to commit per the project's commit conventions while collaborating with the User on the Task.
 
 ---
 
@@ -156,7 +156,7 @@ Perform the following actions:
 2. Construct the Brief per §4.5 Task Brief Format. Embed Spec content directly. Include dependency context at the same depth a Worker would receive. Drop sections that are bus-and-Worker mechanics: Workspace branch instructions, Task Iteration guidance directed at iteration limits, Task Logging instructions, Task Report instructions per §2.8 Task Brief Standards.
 3. Discuss workspace with the User per §2.8 Task Brief Standards. Ask which branch they want to work on. Do not pre-create a feature branch.
 4. Present the Brief in chat. Update the Tracker per `{GUIDE_PATH:task-review}` §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
-5. Continue per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Hosting from step 2 (standby).
+5. Continue per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Collaboration from step 2 (standby).
 
 ### 3.5 Follow-Up Task Prompt Construction
 
@@ -241,7 +241,7 @@ VC configuration recorded in the Version Control table within the Tracker, with 
 
 ### 4.5 Task Brief Format
 
-A Task Brief is a chat message presented to the User in the Manager's chat. It has no YAML frontmatter, no Task Bus file, and no log_path field - the Manager writes the Task Log on the User's behalf at the standard Memory path during hosting.
+A Task Brief is a chat message presented to the User in the Manager's chat. It has no YAML frontmatter, no Task Bus file, and no log_path field - the Manager writes the Task Log on the User's behalf at the standard Memory path during the collaboration.
 
 **Body Sections:**
 

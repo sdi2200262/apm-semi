@@ -12,7 +12,7 @@ Formal terms are always capitalized and carry defined meaning. All other languag
 | ------ | ------------ |
 | **User** | Initiates agents, mediates the Message Bus, and may claim any Task at any point to execute it directly. The User is not a Worker - no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow, and no Handoff procedure. |
 | **Planner** | Gathers requirements and decomposes them into planning documents. Single instance, no Handoff. |
-| **Manager** | Coordinates and orchestrates the Implementation Phase - assigns Tasks, reviews results, maintains planning documents and memory. Hosts User-owned Tasks in chat. Single role, multiple instances via Handoff. |
+| **Manager** | Coordinates and orchestrates the Implementation Phase - assigns Tasks, reviews results, maintains planning documents and memory. Collaborates with the User on User-owned Tasks in chat. Single role, multiple instances via Handoff. |
 | **Worker** | Executes Tasks assigned by the Manager. Becomes a standby collaborator when the User takes over an in-progress Task. Multiple roles (one per domain), multiple instances each via Handoff. |
 
 ---
@@ -102,7 +102,7 @@ The communication system is a file-based Message Bus in `.apm/bus/`. Each agent 
 | **Report Bus** | Worker-to-Manager bus file (`report.md`). Contains Task Reports. |
 | **Handoff Bus** | Outgoing-to-incoming agent bus file (`handoff.md`). Contains the handoff prompt content that instructs the incoming agent to rebuild working context. |
 | **Task Prompt** | Self-contained prompt delivered via Task Bus providing a Worker with everything needed to execute and validate a Task. |
-| **Task Brief** | Conversational counterpart to a Task Prompt, presented in chat to the User by the hosting agent for User-owned Tasks. Built from the same three-source synthesis as a Task Prompt but written as a brief rather than as instructions to an executor. |
+| **Task Brief** | Conversational counterpart to a Task Prompt, presented in chat to the User by the collaborating agent for User-owned Tasks. Built from the same three-source synthesis as a Task Prompt but written as a brief rather than as instructions to an executor. |
 | **Task Report** | Concise summary delivered via Report Bus by Worker for Manager review. |
 
 ---
@@ -154,7 +154,7 @@ These concepts are not formal capitalized terms but are clearly defined because 
 
 **Cross-agent overrides.** When a Worker Handoff is detected, same-agent dependencies from Tasks whose logs were not loaded by the incoming Worker are reclassified as cross-agent. The Manager maintains an override list in the Tracker, recording the specific Tasks affected. During Task Assignment, the Manager checks this list to determine dependency context depth. The Dependency Graph is not modified; overrides are a runtime layer over the static plan.
 
-**Task ownership.** Each Task has a current owner: an AI Worker (the default) or the User. Ownership is recorded in the Tracker and transitions as it changes. AI-Worker Tasks are dispatched via the Task Bus per standard Task Assignment. User-owned Tasks are hosted by the Manager in chat via a Task Brief; if the User takes over an in-progress Worker Task, hosting transfers to that Worker. Ownership transitions via natural language in chat - no command introduced.
+**Task ownership.** Each Task has a current owner: an AI Worker (the default) or the User. Ownership is recorded in the Tracker and transitions as it changes. AI-Worker Tasks are dispatched via the Task Bus per standard Task Assignment. For User-owned Tasks, the Manager presents a Task Brief in chat and is the collaborating agent; if the User takes over an in-progress Worker Task, that Worker becomes the collaborating agent. Ownership transitions via natural language in chat - no command introduced.
 
 **Sovereignty signal.** An indication during Context Gathering that the User wants direct ownership over part of the work - a domain preference, an area the User has stressed about, something the User wants full control of, a part described with strong personal language, or an explicit statement that the User intends to do certain work themselves. Sovereignty signals surface organically through the Planner's existing question rounds, are recorded as durable observations, and survive into the Implementation Phase as Memory notes.
 
@@ -164,11 +164,11 @@ These concepts are not formal capitalized terms but are clearly defined because 
 
 **User unclaim.** The User releasing a Task they hold. Whatever the User did so far becomes context the Manager packages into a Task Prompt for the responsible AI Worker, which then resumes the Task. If no Worker was originally assigned, the Manager picks the best-fit Worker from the registry, possibly with User input.
 
-**Standby collaborator.** The posture an agent (Manager or Worker) adopts while hosting a User-claimed Task: available for questions at the agent's level, providing relevant context, running validation when the User returns, and writing the Task Log on the User's behalf. The agent does not execute Task work autonomously while the User holds the Task.
+**Standby collaborator.** The posture an agent (Manager or Worker) adopts while collaborating with the User on a User-owned Task: available for questions at the agent's level, providing relevant context, running validation when the User returns, and writing the Task Log on the User's behalf. The agent does not execute Task work autonomously while the User holds the Task.
 
 **Leftover handling.** A judgment by the Manager during Task Review or ongoing coordination on whether a residual qualifies for inline handling rather than a follow-up Task. The qualifying scope is small surface area, mechanical or near-mechanical, no new design decisions, no new abstractions, and no domain logic that belongs to a Worker's specialization. Within that scope, the Manager either handles the residual itself or offers it to the User.
 
-**Validation iteration.** A bounded correction effort by the hosting agent on User-completed work where validation fails. The agent attempts a small number of focused changes within the leftover-handling scope and escalates to the User on systemic or persistent failures, returning the code in cleaned-up state - successful changes kept, exploratory changes reverted.
+**Validation iteration.** A bounded correction effort by the collaborating agent on User-completed work where validation fails. The agent attempts a small number of focused changes within the leftover-handling scope and escalates to the User on systemic or persistent failures, returning the code in cleaned-up state - successful changes kept, exploratory changes reverted.
 
 **Active recommendations.** The Manager's behavior of proactively recommending User involvement based on accumulated session signal: sovereignty signals, claim and unclaim history, observed behavior patterns, and stated positions. Recommendations are active at Stage boundaries and quiet in-Stage. The Manager never marks a Task as User-owned without explicit User confirmation.
 

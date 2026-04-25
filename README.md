@@ -8,7 +8,7 @@
 
 APM Semi is an official custom adaptation of [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution. In APM v1, the User mediates messages between fully autonomous AI agents. APM Semi gives the User more direct control by letting them pick up Tasks and execute them themselves while keeping APM's structure and context management.
 
-In APM Semi, Workers are still the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct execution by the User: the User can claim any Task at any point and execute it themselves. Whichever agent currently has context for that Task - the Manager for unassigned or Manager-hosted Tasks, the Worker for in-progress Tasks - hosts the User's execution as a standby collaborator: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf.
+In APM Semi, Workers are still the implementation team and execute Tasks dispatched by the Manager exactly as in APM v1. What is added is direct execution by the User: the User can claim any Task at any point and execute it themselves. When the User picks up a Task during Manager coordination - including Tasks already assigned to the User in the Plan - the Manager becomes the collaborating agent in its own chat. When the User takes over a Task mid-execution in a Worker's chat, that Worker pauses and becomes the collaborating agent. Either way, the collaborating agent stays on standby: answering questions, running validation when the User returns, and writing the Task Log on the User's behalf.
 
 If the User never claims a Task in a given session, APM Semi behaves identically to APM v1.
 
@@ -37,9 +37,9 @@ The collaborative layer adds:
 
 - **Sovereignty signal detection** during Context Gathering. Signals are recorded as durable Memory notes in the Index that the Manager reads during the Implementation Phase.
 - **User-claimable Tasks** during Plan and Spec review and dynamically at any point during the Implementation Phase. The User can also take over an in-progress Worker Task by signaling in the Worker's chat.
-- **Task Briefs** in chat instead of Task Prompts on the bus when the Manager hosts a User-owned Task. The Brief carries the same content as a Task Prompt, written conversationally to the User rather than as instructions to an executor.
-- **Standby collaborator posture** for the hosting agent (Manager or Worker). The agent does not work the Task autonomously while the User holds it; it is available for questions, runs validation when the User returns, and writes the Task Log on the User's behalf.
-- **Validation iteration** with bounded scope and systemic-or-persistent escalation. When validation fails on User-completed work, the hosting agent attempts to resolve within scope and escalates with cleaned-up code state if the failure is architectural, design-level, or not resolving across attempts.
+- **Task Briefs** in chat instead of Task Prompts on the bus when the Manager is collaborating with the User on a Task. The Brief carries the same content as a Task Prompt, written conversationally to the User rather than as instructions to an executor.
+- **Standby collaborator posture** for the collaborating agent (Manager or Worker). The agent does not work the Task autonomously while the User holds it; it is available for questions, runs validation when the User returns, and writes the Task Log on the User's behalf.
+- **Validation iteration** with bounded scope and systemic-or-persistent escalation. When validation fails on User-completed work, the collaborating agent attempts to resolve within scope and escalates with cleaned-up code state if the failure is architectural, design-level, or not resolving across attempts.
 - **Leftover handling** by the Manager. Small mechanical residuals after Task Review can be handled inline or offered to the User instead of always dispatching a follow-up.
 - **Active recommendations** from the Manager based on accumulated session signal: actively at Stage boundaries, quietly in-Stage. The Manager never marks a Task as User-owned without explicit confirmation.
 
@@ -52,7 +52,7 @@ APM Semi is an additive overlay on APM v1. It loses nothing if you do not claim 
 | **User role** | Mediates agent communication and can claim and execute any Task directly | Mediates agent communication |
 | **Worker model** | Same as v1; Workers execute dispatched Tasks | Workers execute dispatched Tasks |
 | **Task Brief** | Manager presents Task Briefs in chat for User-owned Tasks | No equivalent |
-| **Validation iteration** | Hosting agent corrects within scope, escalates on systemic failures | Worker iterates within scope, returns Partial when stalled |
+| **Validation iteration** | Collaborating agent corrects within scope, escalates on systemic failures | Worker iterates within scope, returns Partial when stalled |
 | **Leftover handling** | Manager can handle inline within scope, offer to User, or dispatch | Manager dispatches a follow-up |
 | **Active recommendations** | Manager surfaces recommendations at Stage boundaries and on signal | None |
 | **Platforms** | Same six as v1 | Six platforms supported |
