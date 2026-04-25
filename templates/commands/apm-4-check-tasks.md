@@ -3,7 +3,7 @@ command_name: check-tasks
 description: Deliver a Task Prompt to an APM Worker.
 ---
 
-# APM {VERSION} - Worker Check Tasks Command
+# APM Semi {VERSION} - Worker Check Tasks Command
 
 Check your Task Bus for pending Task Prompts. If you are a Planner, Manager, or non-APM agent, concisely decline and take no action. This command replaces manual file referencing - you resolve your bus path from your registered identity or from the provided `[agent-id]` argument.
 

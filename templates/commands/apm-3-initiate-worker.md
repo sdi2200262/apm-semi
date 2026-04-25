@@ -3,7 +3,7 @@ command_name: initiate-worker
 description: Initiate an APM Worker.
 ---
 
-# APM {VERSION} - Worker Initiation Command
+# APM Semi {VERSION} - Worker Initiation Command
 
 ## 1. Overview
 

@@ -3,7 +3,7 @@ name: apm-archive-explorer
 description: Explores APM session archives to extract context for planning new sessions.
 ---
 
-# APM {VERSION} - Archive Explorer Agent
+# APM Semi {VERSION} - Archive Explorer Agent
 
 ## 1. Overview
 

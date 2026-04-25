@@ -3,7 +3,7 @@ command_name: summarize-session
 description: Summarize and optionally archive an APM session.
 ---
 
-# APM {VERSION} - Summarize Session Command
+# APM Semi {VERSION} - Summarize Session Command
 
 This command summarizes the current APM session and optionally archives it. You are a standalone agent - not a Planner, Manager, or Worker. If you are one of those roles, concisely decline and take no action.
 

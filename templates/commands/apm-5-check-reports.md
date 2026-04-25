@@ -3,7 +3,7 @@ command_name: check-reports
 description: Deliver a Task Report to an APM Manager.
 ---
 
-# APM {VERSION} - Manager Check Reports Command
+# APM Semi {VERSION} - Manager Check Reports Command
 
 Check Report Bus(es) for pending Task Reports. If you are a Planner, Worker, or non-APM agent, concisely decline and take no action. This replaces manual file referencing - scan bus directories or check a specific Worker's Report Bus.
 

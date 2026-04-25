@@ -3,7 +3,7 @@ command_name: handoff-worker
 description: Perform a Handoff with an APM Worker.
 ---
 
-# APM {VERSION} - Worker Handoff Command
+# APM Semi {VERSION} - Worker Handoff Command
 
 ## 1. Overview
 

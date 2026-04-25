@@ -3,7 +3,7 @@ command_name: handoff-manager
 description: Perform a Handoff with an APM Manager.
 ---
 
-# APM {VERSION} - Manager Handoff Command
+# APM Semi {VERSION} - Manager Handoff Command
 
 ## 1. Overview
 
