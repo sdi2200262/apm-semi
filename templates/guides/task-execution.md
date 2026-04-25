@@ -46,7 +46,33 @@ Operate in the workspace provided by the Task Prompt - main working directory on
 
 **Commit content:** APM terminology - Task IDs, Stage numbers, agent identifiers, framework vocabulary - does not appear in commit messages, branch references, or source code comments. Commits reflect the actual code changes and actions taken, not the framework managing them. Write commit messages as if no project management framework existed.
 
-### 2.6 Batch Rules
+### 2.6 User Takeover Standards
+
+The User may step into your chat at any point during execution and signal takeover via natural language. There is no command for this - takeover signals are conversational. Recognize signals such as the User saying they will take it from here, asking you to pause and let them work, or stating they want to do this part themselves. When ambiguous, ask the User briefly to confirm before pausing.
+
+**Pause cleanly.** Do not write a partial Task Log. Do not report the takeover to the Manager at takeover time - the Manager learns when the eventual Task Report and Task Log arrive, which include a takeover marker noting that a User takeover occurred and at what point. Stop your current execution step and acknowledge the takeover.
+
+**Standby collaborator posture.** While the User holds the Task in your chat, your role is standby collaborator: available for execution-level questions (what was done so far, files touched, decisions made, what was about to come next), running validation when the User returns, and writing the Task Log on the User's behalf. You do not execute Task work autonomously while the User holds the Task. You have the execution-level context the Manager does not have access to - offer that context as needed.
+
+**Reporting done.** When the User finishes the remaining work, the User reports back via natural language. Interpret the User's message, cross-reference the Task Prompt's validation criteria, and proceed to validation iteration per §2.7 Validation Iteration Standards. If validation status is missing from the report, ask explicitly before proceeding. Peek at the git diff (or equivalent ground-truth signal) before writing the log so the log accurately reflects what changed even when the User's narrative is incomplete.
+
+**Unclaim during takeover.** If the User decides to hand the Task back rather than complete it, gather what the User did so far as additional context for your continuation. Present a brief plan for resuming execution from the takeover point, then continue per §3 Task Execution Procedure. The eventual Task Log notes both the takeover and the return as part of the breakdown of who did what.
+
+### 2.7 Validation Iteration Standards
+
+When validation fails on User-completed work after a takeover, attempt to resolve the failure yourself within a bounded scope before escalating to the User.
+
+**Qualifying scope:** small surface area, mechanical or near-mechanical, no new design decisions, no new abstractions, no domain logic the User owns. The judgment is in the same family as the existing in-line correction allowance during your own execution per §2.3 Iteration Standards.
+
+**Iterate within scope.** A small number of focused attempts, one targeted change per iteration. When the work would otherwise consume too much context, leverage debug subagent dispatch per §2.3 Iteration Standards. Verify subagent findings before applying them.
+
+**Escalate on systemic or persistent failure.** Stop iterating and escalate when the failure is **systemic** (the issue points to something deeper than the failing check, architectural, design-level, multi-area, or otherwise outside the in-line correction scope) or **persistent** (the same issue is not resolving across iterations even when you understand it). Either condition triggers escalation as soon as it becomes clear; no fixed iteration count is required.
+
+**Cleaned-up state on escalation.** When escalating, present the situation: what was attempted, what worked, what did not, hypotheses about why, and the cleaned-up state of the code. Changes that produced real progress are kept; exploratory or unsuccessful changes that did not contribute are reverted. If nothing produced progress, the code returns to the exact state the User delivered. The User does not clean up after you. After escalation, the User decides whether to continue iterating themselves (you stay in standby) or hand back with new direction.
+
+The base behavior (iterate within bounded scope, escalate when systemic or persistent) also applies to validation failures during your own execution per §2.3 Iteration Standards - the same scope criteria govern when you can correct in-line versus when to return Partial for the Manager to restructure.
+
+### 2.8 Batch Rules
 
 When receiving a batch of Tasks (multiple Task Prompts in a single Task Bus message), execute sequentially. Complete each Task fully - execute, validate, and write the Task Log - before starting the next Task in the batch. Each Task gets its own Task Log at its specified `log_path`.
 
@@ -61,7 +87,7 @@ Sequential flow from Task Prompt receipt through completion. Task Validation and
 ### 3.1 Task Prompt Receipt
 
 On Task receipt, perform the following actions:
-1. Check for batch envelope: if Task Bus contains `batch: true` in frontmatter, it contains multiple Task Prompts separated by `---` delimiters. Execute each Task sequentially per §2.6 Batch Rules.
+1. Check for batch envelope: if Task Bus contains `batch: true` in frontmatter, it contains multiple Task Prompts separated by `---` delimiters. Execute each Task sequentially per §2.8 Batch Rules.
 2. Verify `agent` in YAML frontmatter matches your assigned identity. Validate the bus directory matches `agent` per `{SKILL_PATH:apm-communication}` §4.1 Bus Identity Standards. If mismatch, decline per `{COMMAND_PATH:apm-3-initiate-worker}` §5 Operating Rules.
 3. If Workspace section present: switch to the specified branch or worktree path before starting work.
 4. If `has_dependencies: true`, continue to Context Integration, otherwise proceed to §3.3 Task Execution.
@@ -103,11 +129,27 @@ Perform the following actions:
 Perform the following actions:
 1. Present your assessment visibly in chat: whether all objectives are met and deliverables are ready, whether any important findings or compatibility issues arose, and the Task's outcome status per `{GUIDE_PATH:task-logging}` §2.2 Outcome Standards.
 2. Commit work to the assigned branch per §2.5 Version Control Standards.
-3. Create Task Log per `{GUIDE_PATH:task-logging}` §3.1 Task Log Procedure at `log_path`.
+3. Create Task Log per `{GUIDE_PATH:task-logging}` §3.1 Task Log Procedure at `log_path`. If a User takeover occurred during this Task, include the takeover marker and the User-owned Task Log additions.
 4. Write Task Report per `{GUIDE_PATH:task-logging}` §3.2 Task Report Delivery. Include relevant status indications:
    - *After Handoff.* If this is the first Task after Handoff initialization, include incoming Worker indication: state instance number, list the specific Task Log files loaded, and note that previous-Stage logs were not loaded.
    - *After recovery:* If auto-compaction occurred and recovery was performed via `/apm-9-recover`, note it in the Task Report so the Manager is aware.
+   - *After User takeover.* If a User takeover occurred during this Task, include a takeover marker noting the takeover point and what was complete at that point. The marker is part of the Task Report so the Manager sees it during Task Review.
 5. State readiness for the next Task via `/apm-4-check-tasks` (no argument needed - you are already registered). Await the next Task Prompt or Handoff initiation.
+
+### 3.7 User Takeover
+
+Execute when the User signals takeover during execution per §2.6 User Takeover Standards, while the Task is in any pre-completion phase.
+
+Perform the following actions:
+1. **Recognize and pause.** Identify the takeover signal in the User's message. If ambiguous, ask briefly to confirm. On confirmation, stop your current step. Do not write a partial Task Log.
+2. **Acknowledge in chat** with the execution-level state at the point of takeover: what has been done so far, files touched, decisions made, and what was about to come next. Offer this context as the User starts working.
+3. **Hold standby.** Answer execution-level questions when the User asks. Do not work on the Task autonomously while the User holds it. The User may pause and resume freely.
+4. **Receive the report.** When the User reports done, interpret the message per §2.6 User Takeover Standards. Cross-reference the Task Prompt's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff before continuing.
+5. **Run remaining validation.** Execute whichever validation criteria the User did not check.
+6. **Iterate on validation failure per §2.7 Validation Iteration Standards.** Within bounded scope, attempt resolution. Escalate to the User on systemic or persistent failure with cleaned-up state. After escalation, the User decides whether to continue iterating themselves or hand back with new direction.
+7. **Continue to Task Completion** per §3.6 Task Completion. The Task Log includes the takeover marker and the User-owned additions; the Task Report includes the takeover marker.
+
+When the User unclaims during takeover (hands the Task back rather than completing it), use the User's progress as additional context, present a brief plan for resuming, and continue per §3.3 Task Execution. The takeover and return are noted in the Task Log breakdown.
 
 ---
 
