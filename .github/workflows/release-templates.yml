@@ -113,7 +113,7 @@ jobs:
           if [[ -n "$RELEASE_NOTES" ]]; then
             NOTES="$RELEASE_NOTES"
           else
-            NOTES="APM Release $TAG"
+            NOTES="APM Semi $TAG"
           fi
 
           PRERELEASE_FLAG=""
@@ -129,7 +129,7 @@ jobs:
             gh release create "$TAG" \
               dist/*.zip \
               dist/apm-release.json \
-              --title "APM Release $TAG" \
+              --title "APM Semi $TAG" \
               --notes "$NOTES" \
               --target "$GITHUB_SHA" \
               $PRERELEASE_FLAG
