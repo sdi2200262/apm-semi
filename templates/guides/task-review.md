@@ -38,7 +38,7 @@ After reviewing a Task Log, determine the review outcome.
 
 **Post-investigation outcome:**
 - If no issues are found (false positives, nothing actionable), continue to the next Task(s).
-- If a residual qualifies for inline handling under §2.10 Leftover Handling Standards, handle it yourself directly or offer it to the User per that section instead of dispatching a follow-up.
+- If a residual qualifies for inline handling under §2.10 Residual Handling Standards, handle it yourself directly or offer it to the User per that section instead of dispatching a follow-up.
 - If the Worker needs to retry with refined instructions, create a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction. If the Worker also left changes uncommitted, note this in the follow-up instructions.
 - If planning documents need modification, proceed to §3.4 Planning Document Modification.
 - If investigation reveals deficiencies in previously-Done work, create a new Task through Plan modification per §2.3 Planning Document Modification Standards. The original Task remains Done; reference it from the new Task, include the discovery context, and specify what needs correction.
@@ -105,7 +105,7 @@ After all Tasks in a Stage are Done, assess whether the Stage's deliverables req
 
 When a report arrives from an agent not listed in Worker tracking, it is a non-APM agent that joined the session independently. These reports do not follow the standard processing flow - there is no Task Log, no Worker tracking entry, and no dispatch state to update. Assess the report on its own terms: what the agent did, whether it affects planning documents or current dispatch. Add a working note to the Tracker recording the agent's identity and contribution. Inform the User of the findings. If follow-up work is needed, assign it per `{GUIDE_PATH:task-assignment}` §2.7 Non-APM Agent Dispatch.
 
-### 2.10 Leftover Handling Standards
+### 2.10 Residual Handling Standards
 
 When you identify a residual after Task Review or during ongoing coordination - something that, by strict procedure, would warrant a follow-up Task Prompt to a Worker - judge whether the residual qualifies for inline handling instead.
 
@@ -114,7 +114,7 @@ When you identify a residual after Task Review or during ongoing coordination - 
 **Within the qualifying scope**, you may:
 
 - *Handle the residual yourself directly.* No Worker dispatch, no follow-up Task. Record the action as part of the parent Task's working notes during the review-dispatch cycle and surface it to the User as an awareness item alongside other small contained actions per §2.2 Review Outcome Standards.
-- *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty signals captured during planning and recorded in the Index, claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.13 Active Recommendation Standards.
+- *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty signals captured during planning and recorded in the Index, claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.13 Proactive Claim Suggestion Standards.
 
 **Beyond the qualifying scope:** dispatch a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction, or escalate to the User for direction when the residual implies a Plan or Spec change per §2.3 Planning Document Modification Standards.
 
@@ -124,19 +124,19 @@ The base behavior (handle-yourself or dispatch-follow-up) operates without User 
 
 When a Task is owned by the User, you collaborate with the User on it in your chat instead of dispatching to a Task Bus. The User is stepping in to execute the Task themselves - not a Worker. There is no bus slot, no Worker registry entry, no Task Prompt delivered, no Rules to follow on the User's behalf, and no Handoff procedure for the User.
 
-**Standby collaborator posture.** While the User holds the Task, your role is standby collaborator: available for questions, providing coordination-level context (cross-Worker contracts, Spec ambiguities, dependency implications, Stage timing), running validation when the User returns, and writing the Task Log on the User's behalf. You do not execute Task work autonomously while the User holds the Task. Continue coordinating AI Workers on independent Tasks in parallel.
+**On standby.** While the User holds the Task, you are available for questions, provide coordination-level context (cross-Worker contracts, Spec ambiguities, dependency implications, Stage timing), run validation when the User returns, and write the Task Log on the User's behalf. You do not execute Task work autonomously while the User holds the Task. Continue coordinating AI Workers on independent Tasks in parallel.
 
 **Held in Active.** A User-claimed Task is held in Active state with `User` in the Owner column per §4.1 Task Tracking Format. The User may pause and resume freely; there is no timeout, no auto-unclaim, and no escalation - those would violate ownership.
 
-**Reporting done.** When the User finishes a Task, the User reports back via natural language. The report is expected to include what was done, any narrative context worth capturing (decisions made, things noticed, deviations from the brief), and validation status - which validation criteria the User checked and which the User wants you to handle. Do not enforce a strict report format. Interpret the User's message, cross-reference the Task's validation criteria, and proceed to validation iteration. If the report omits validation status entirely, ask explicitly before proceeding - silent assumption of validation completeness is a defect. Peek at the git diff (or equivalent ground-truth signal) before writing the log so the log accurately reflects what changed even when the User's narrative is incomplete.
+**Reporting done.** When the User finishes a Task, the User reports back via natural language. The report is expected to include what was done, any narrative context worth capturing (decisions made, things noticed, deviations from the brief), and validation status - which validation criteria the User checked and which the User wants you to handle. Do not enforce a strict report format. Interpret the User's message, cross-reference the Task's validation criteria, and proceed to validation per §2.12 User-Completed Work Validation Standards. If the report omits validation status entirely, ask explicitly before proceeding - silent assumption of validation completeness is a defect. Peek at the git diff (or equivalent ground-truth signal) before writing the log so the log accurately reflects what changed even when the User's narrative is incomplete.
 
 **Unclaim.** When the User unclaims a Task they hold, package whatever the User did so far as context into a Task Prompt for the responsible AI Worker per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction (using the same construction principles, with the User's progress as the dependency context). If no Worker was originally assigned (the Task was claimed at planning), pick the best-fit Worker from the registry, possibly with User input. Update Owner accordingly.
 
 **Already-done Tasks.** A Task already marked Done is not claimable. If the User attempts to claim it, note the Task is complete and ask whether the User wants to revisit anything specific - any revisit goes through standard Plan modification per §2.3 Planning Document Modification Standards.
 
-### 2.12 Validation Iteration Standards
+### 2.12 User-Completed Work Validation Standards
 
-When validation fails on User-completed work, attempt to resolve the failure yourself within a bounded scope before escalating to the User. The bounding criteria match §2.10 Leftover Handling Standards: the issue must be small in surface area, mechanical or near-mechanical, and not involve new design decisions or domain logic the User owns.
+When validation fails on User-completed work, attempt to resolve the failure yourself within a bounded scope before escalating to the User. The bounding criteria match §2.10 Residual Handling Standards: the issue must be small in surface area, mechanical or near-mechanical, and not involve new design decisions or domain logic the User owns.
 
 **Iterate within scope.** A small number of focused attempts, one targeted change per iteration. When the work would otherwise consume too much of your context, leverage Ad-Hoc subagent dispatch (debug, research, verification) per §2.8 Stage Verification Standards and `{GUIDE_PATH:task-assignment}` Manager-side subagent guidance. Verify subagent findings before applying them.
 
@@ -146,9 +146,9 @@ When validation fails on User-completed work, attempt to resolve the failure you
 
 The base behavior (iterate within bounded scope, escalate when systemic or persistent) operates without the User-context wrapper as well - when validation fails on a Worker-completed Task during review, the same bounded-iteration judgment applies before issuing a follow-up Task Prompt.
 
-### 2.13 Active Recommendation Standards
+### 2.13 Proactive Claim Suggestion Standards
 
-You actively recommend User involvement based on accumulated session signal. Inputs:
+You proactively surface opportunities for the User to claim Tasks based on accumulated session signal. Inputs:
 
 - *Sovereignty signals* captured during Context Gathering and recorded as Memory notes in the Index. These persist across Handoffs.
 - *Claim and unclaim history* during the session - what the User has taken on, what they have handed back, at what points.
@@ -159,12 +159,12 @@ These inputs live as durable Memory notes in the Index per §2.7 Note-Taking Sta
 
 **Cadence:**
 
-- *At Stage boundaries: actively.* When a Stage completes and before you begin dispatching the next Stage's Tasks, review the upcoming Tasks against the recommendation inputs and proactively offer claims for relevant Tasks. This is the most active recommendation moment.
-- *In-Stage: quietly.* Within a Stage, only volunteer a recommendation when triggered by a concrete signal - a leftover that qualifies for offer-to-User per §2.10 Leftover Handling Standards, a follow-up that qualifies, a finding from Task Review touching an area the User has claimed sovereignty over, or a similar signal. Do not nag.
+- *At Stage boundaries: actively.* When a Stage completes and before you begin dispatching the next Stage's Tasks, review the upcoming Tasks against the inputs and proactively offer claims for relevant Tasks. This is the most active suggestion moment.
+- *In-Stage: quietly.* Within a Stage, only volunteer a suggestion when triggered by a concrete signal - a residual that qualifies for offer-to-User per §2.10 Residual Handling Standards, a follow-up that qualifies, a finding from Task Review touching an area the User has claimed sovereignty over, or a similar signal. Do not nag.
 
 **Hard constraints:**
 
-- *No auto-claiming.* Never mark a Task as User-owned without explicit User confirmation, even when signals strongly point to it. Recommendations are recommendations.
+- *No auto-claiming.* Never mark a Task as User-owned without explicit User confirmation, even when signals strongly point to it. Suggestions are suggestions.
 - *User decides.* The User can decline, defer, or counter at any time. Accept the decision and proceed.
 
 ---
@@ -232,7 +232,7 @@ Perform the following actions:
 2. Assess whether Stage verification is needed per §2.8 Stage Verification Standards. When warranted, verify before proceeding.
 3. Distill working notes per §2.7 Note-Taking Standards: observations with lasting impact on future work become Memory notes in the Index, Stage-specific observations become Stage summary prose. Keep working notes that will be needed in the next Stage. When this review immediately triggers Stage summary (last Task in Stage), observations from this review can be written directly to their destinations rather than first passing through working notes.
 4. Synthesize Stage-level observations and append a Stage summary to the Index per §4.3 Index Format. The Index structure (Memory notes above Stage summaries) enables steps 3 and 4 as a single contiguous edit.
-5. Run an active recommendation review per §2.13 Active Recommendation Standards before beginning the next Stage's dispatches. Review the upcoming Stage's Tasks against the recommendation inputs and proactively offer claims for relevant Tasks. Accept the User's decision on each and proceed - claimed Tasks become User-owned in the Plan and Tracker per §4.1 Task Tracking Format; declined recommendations proceed via standard dispatch.
+5. Review the upcoming Stage's Tasks against the inputs in §2.13 Proactive Claim Suggestion Standards and proactively offer claims for relevant Tasks before beginning the next Stage's dispatches. Accept the User's decision on each and proceed - claimed Tasks become User-owned in the Plan and Tracker per §4.1 Task Tracking Format; declined suggestions proceed via standard dispatch.
 
 ### 3.6 User-Owned Task Collaboration
 
@@ -243,7 +243,7 @@ Perform the following actions:
 2. **Hold standby per §2.11 User-Owned Task Collaboration Standards.** Continue coordinating AI Workers on independent Tasks in parallel. Answer questions when the User asks. The User may pause and resume freely.
 3. **Receive the report.** When the User reports done, interpret the message per §2.11 User-Owned Task Collaboration Standards. Cross-reference the Task's validation criteria. If validation status is missing, ask before proceeding. Peek at the git diff (or equivalent ground-truth signal) before continuing.
 4. **Run remaining validation.** Execute whichever validation criteria the User did not check. When validation passes, continue to step 6.
-5. **Iterate on validation failure per §2.12 Validation Iteration Standards.** Within bounded scope, attempt resolution. Escalate to the User on systemic or persistent failure with cleaned-up state. After escalation, the User decides whether to continue iterating themselves (return to step 2 standby) or hand back with new direction (resume from step 4).
+5. **Iterate on validation failure per §2.12 User-Completed Work Validation Standards.** Within bounded scope, attempt resolution. Escalate to the User on systemic or persistent failure with cleaned-up state. After escalation, the User decides whether to continue iterating themselves (return to step 2 standby) or hand back with new direction (resume from step 4).
 6. **Write the Task Log on the User's behalf** per `{GUIDE_PATH:task-logging}` User-owned Task Log additions. Capture ownership, takeover marker if applicable, breakdown of who did what during execution and validation, and the User's narrative context. The log lives at the standard Memory path.
 7. **Continue review processing** per §3.3 Review Outcome from step 3 onward (Tracker updates, readiness reassessment, next dispatch). Set Owner back to the originally-assigned Worker if the Task was a takeover and you are recording the Worker's eventual return; otherwise the Owner remains as it stood at completion.
 

@@ -45,7 +45,7 @@ When a Task is owned by the User and you are the collaborating agent (Worker aft
 
 **User narrative.** Add a body section `## User Notes` capturing the narrative context the User provided (decisions made, things they noticed, deviations from the brief). Quote or paraphrase faithfully - this is the User's voice in the log.
 
-**Validation breakdown.** In the existing `## Validation` section, distinguish criteria the User checked themselves from criteria you ran on the User's behalf during validation iteration. Note any iteration that occurred and what was kept versus reverted per `{GUIDE_PATH:task-review}` §2.12 Validation Iteration Standards (or `{GUIDE_PATH:task-execution}` §2.7 Validation Iteration Standards when you are the collaborating Worker).
+**Validation breakdown.** In the existing `## Validation` section, distinguish criteria the User checked themselves from criteria you ran on the User's behalf during validation. Note any iteration that occurred and what was kept versus reverted per `{GUIDE_PATH:task-review}` §2.12 User-Completed Work Validation Standards (or `{GUIDE_PATH:task-execution}` §2.7 User-Completed Work Validation Standards when you are the collaborating Worker).
 
 The log is a User-owned Task Log; status, flags, and remaining body sections follow the standard format.
 
