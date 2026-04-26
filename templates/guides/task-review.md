@@ -71,6 +71,8 @@ Merge state is a dispatch prerequisite. Merge completed feature branches into th
 
 **Merge execution:** Clean merges require no User intervention. Perform merges autonomously - switch to the base branch (`git checkout <base-branch>`), merge the completed branch (`git merge <branch-name>`), then verify.
 
+**Merge location:** By default, perform merges in the main working directory on the base branch. When a User-owned Task is currently Active in main and the User is on a non-base branch, the Manager performs AI Worker merges in the dedicated merge worktree at `.apm/worktrees/.merge/` per `{GUIDE_PATH:task-assignment}` §2.5 Version Control Standards - main is held by the User and cannot be disturbed. Create the merge worktree on first need (`git worktree add .apm/worktrees/.merge <base-branch>`) and reuse it. When the User is on the base branch directly in main, the merge worktree is unnecessary - merge in main, where new commits to base are added beneath the User's uncommitted state. The User's branch (if any) is merged after the User reports done, in whichever location applies. Remove the merge worktree when no User Task is Active and merges are settled.
+
 **Conflict resolution:** Resolve using coordination-level context - knowledge of both Tasks' objectives, project design, and the Spec. For complex conflicts, spawn a debug subagent or escalate to the User.
 
 **Branch protection adaptation:** If the base branch has protection rules preventing direct merges, adapt (create a PR, merge into an intermediate branch, or ask the User). Discovered reactively and noted in working notes.

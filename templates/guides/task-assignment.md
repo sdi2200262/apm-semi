@@ -62,6 +62,8 @@ Before constructing individual Task Prompts, assess dispatch opportunities acros
 
 **Parallel dispatch prerequisites:** Version control must be initialized (established during Manager 1 initiation per `{COMMAND_PATH:apm-2-initiate-manager}` §2.1 First Manager Initiation). If version control is not active, fall back to sequential dispatch. Recommend the User configure platform tool approvals for Workers to minimize interactive wait times during parallel execution.
 
+**Concurrent User Task:** When a User-owned Task is currently Active, the User holds the main working directory. All AI Worker dispatches concurrent with a User Task therefore operate in worktrees regardless of single, batch, or parallel classification - main is unavailable for Worker execution and merges. See §2.5 Version Control Standards for the merge worktree pattern.
+
 Before dispatching a ready unit, check whether a pending report would unlock Tasks that combine well with the current unit. If it is the only outstanding report, waiting costs little. If multiple reports are pending or no plausible combination exists, dispatch immediately.
 
 **Wait state:** When no Tasks are Ready but Workers are still active, communicate what was processed, what is pending, and what the User should do next. Direct the User to return the next report - if a pending report would unlock a better dispatch combination, recommend prioritizing that report.
@@ -72,13 +74,17 @@ Version control provides workspace isolation during parallel dispatch. Each disp
 
 **Branch standards:** Every dispatch unit gets its own feature branch off the base branch per the branch convention in the Tracker. APM terminology (Task IDs, Stage numbers, agent identifiers) does not appear in branch names, commit messages, or worktree directory names - these reflect the actual work, not the framework managing it. A batch of sequential Tasks assigned to the same Worker shares one branch.
 
-**Worktree standards:** Worktrees are created only for parallel dispatch. Each parallel dispatch unit gets its own worktree so all parallel Workers operate in isolated directories and the main working directory remains on the base branch for merge operations. For sequential dispatch, the Worker operates in the main working directory on their feature branch.
+**Worktree standards:** Worktrees are created for parallel AI Worker dispatch and for any AI Worker dispatch concurrent with a User-owned Task per §2.4 Dispatch Standards. Each worktree dispatch unit gets its own worktree so Workers operate in isolated directories and the main working directory remains on the base branch for merge operations. For pure sequential dispatch (one AI Worker, no concurrent User Task), the Worker operates in the main working directory on their feature branch.
 
 - *Layout:* Worktrees placed under `.apm/worktrees/` per §4.3 Branch and Worktree Standards.
 - *Concurrency limit:* maximum 3-4 concurrent worktrees.
 - *Lifecycle:* short-lived - created before dispatch, removed after merge.
 
 Worktrees contain only tracked files; if a Worker needs untracked assets, note this in the Task Prompt. When `.apm/` is tracked (or partially tracked), the worktree may contain `.apm/` files but all APM runtime operations (Task Logs, bus communication) must target the project root's `.apm/`, not the worktree copy. You need to read Task Logs and bus files for review before merging, so they must be accessible from the main working directory. Include this guidance in the Task Prompt's Workspace section for worktree dispatch.
+
+**User-owned Task workspace:** User-owned Tasks operate in the main working directory on whatever branch the User chooses, with whatever git flow the User prefers. The Manager does not pre-create branches, dictate flow, or place the User in a worktree - the User works in their actual codebase environment unchanged.
+
+**Merge worktree (conditional):** When a User-owned Task is currently Active in main, the Manager cannot disturb main to merge AI Worker branches. In that case the Manager creates a dedicated merge worktree at `.apm/worktrees/.merge/` checked out on the base branch (`git worktree add .apm/worktrees/.merge <base-branch>`) and performs AI Worker merges there. The merge worktree shares git refs with main, so merging within it updates base for all worktrees of the repo - the User's working tree in main is preserved. Reuse the merge worktree for the duration of overlapping User-and-Worker activity. When the User chose to work directly on the base branch in main, the merge worktree is unnecessary - merge in main, where new commits to base are added beneath the User's uncommitted state. After the User reports done, the User's branch (if any) is merged in whichever location applies. The merge worktree is removed when no User Task is Active and merges are settled. When no User Task is concurrent, AI Worker merges happen in main per the v1 behavior - main on base is the merge tree.
 
 ### 2.6 Delivery Standards
 
@@ -100,7 +106,7 @@ When a Task is owned by the User, deliver a Task Brief in chat instead of dispat
 
 **What stays the same:** dependency classification, the three-source synthesis itself, the embed-vs-reference choices for content. The User reads the Brief and works however they choose - no validation criteria are removed, no scope reduction.
 
-**Workspace.** When the project uses version control, ask the User which branch they want to work on - the User may choose a feature branch, the base branch, or a worktree. The Manager does not pre-create branches for User-owned Tasks. The User commits or asks the Manager to commit per the project's commit conventions while collaborating with the User on the Task.
+**Workspace.** User-owned Tasks operate in the main working directory per §2.5 Version Control Standards. The User chooses their branch and follows whatever git flow they prefer; the Manager does not pre-create branches, place the User in a worktree, or impose conventions on the User. The User commits or asks the Manager to commit. When AI Worker dispatch is concurrent with the User Task, the Manager handles AI Worker merges through the merge worktree per §2.5, leaving the User's main directory undisturbed.
 
 ---
 
@@ -154,7 +160,7 @@ Execute when a User-owned Task becomes Ready, or when the User claims a Task you
 Perform the following actions:
 1. Run §3.2 Per-Task Analysis as you would for a Worker - read dependencies, classify context depth, extract Spec content, extract Plan Task fields. The three-source synthesis is identical for User-owned Tasks.
 2. Construct the Brief per §4.5 Task Brief Format. Embed Spec content directly. Include dependency context at the same depth a Worker would receive. Drop sections that are bus-and-Worker mechanics: Workspace branch instructions, Task Iteration guidance directed at iteration limits, Task Logging instructions, Task Report instructions per §2.8 Task Brief Standards.
-3. Discuss workspace with the User per §2.8 Task Brief Standards. Ask which branch they want to work on. Do not pre-create a feature branch.
+3. The User-owned Task workspace is the main working directory per §2.8 Task Brief Standards - do not pre-create a branch, do not place the User in a worktree, and do not prescribe a flow. The User works in their normal codebase environment on whatever branch they choose.
 4. Present the Brief in chat. Update the Tracker per `{GUIDE_PATH:task-review}` §4.1 Task Tracking Format: set the Task's Status to Active and Owner to `User`. Do not write to a Task Bus.
 5. Continue per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Collaboration from step 2 (standby).
 
