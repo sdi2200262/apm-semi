@@ -1,15 +1,17 @@
 ---
 name: apm-customization
-description: Guides an AI agent through customizing APM templates, building releases, and managing a custom APM repository.
+description: Guides an AI agent through customizing APM Semi templates, building releases, and managing this custom APM repository.
 ---
 
-# APM Customization Skill
+# APM Semi Customization Skill
 
 ## 1. Overview
 
-**Reading Agent:** Any AI assistant working within a forked or templated APM repository
+**Reading Agent:** Any AI assistant working within a forked or templated APM Semi repository
 
-This skill guides the customization of APM templates. It assumes the Agent is operating within the APM codebase itself (a fork or template of the official repository) and can explore the repository structure directly.
+This skill guides the customization of APM Semi templates. It assumes the Agent is operating within the APM Semi codebase itself (a fork or template of this repository) and can explore the repository structure directly.
+
+APM Semi is a custom adaptation of the official [Agentic Project Management (APM)](https://github.com/sdi2200262/agentic-project-management) framework that adds a collaborative human-and-agent execution layer: the User can claim any Task at any point and execute it directly while the agent on their side stays on standby. Customizations should preserve or thoughtfully extend this collaborative layer rather than ignore it.
 
 ### 1.1 Objectives
 
@@ -41,14 +43,14 @@ Explore the repository to understand the layout. The key directories are:
 **`templates/apm/`** - Artifact templates that become the `.apm/` directory (Spec, Plan, Tracker, Memory Index templates).
 
 **`templates/_standards/`** - Development-time specifications that define how templates should be written. These files are not included in builds. Read them to understand the design rules:
-- `WORKFLOW.md` - The formal workflow specification. This is the source of truth for all behavior. Any change to APM's workflow must be reflected here first, then propagated to runtime files.
-- `TERMINOLOGY.md` - Formal vocabulary and defined concepts
+- `WORKFLOW.md` - The formal workflow specification, including APM Semi's collaborative-execution overlay (sovereignty signals, User-claimable Tasks, standby collaboration, takeover protocol, residual handling). This is the source of truth for all behavior. Any change to the workflow must be reflected here first, then propagated to runtime files.
+- `TERMINOLOGY.md` - Formal vocabulary and defined concepts, including APM Semi terms (Collaborating agent, Task Brief, Owner, sovereignty signal)
 - `STRUCTURE.md` - Structural standards for each file type
 - `WRITING.md` - Writing patterns, tone, formatting
 
-**`build/`** - The build system that processes templates into platform-specific bundles. `build-config.json` defines the supported targets (assistants) and their directory layouts.
+**`build/`** - The build system that processes templates into platform-specific bundles. `build-config.json` defines the supported targets (Claude Code, Cursor, Copilot, Gemini CLI, OpenCode, Codex CLI) and their directory layouts. APM Semi keeps all six platforms supported.
 
-**`skills/`** - Standalone skills (like this one) that are not part of the main APM bundles. APM Semi installs via the official `agentic-pm` CLI and does not ship its own CLI source.
+**`skills/`** - Standalone skills (like this one) that are not part of the main APM Semi bundles. APM Semi installs via the official `agentic-pm` CLI and does not ship its own CLI source.
 
 ---
 
@@ -83,10 +85,19 @@ This produces a `dist/` directory with ZIP bundles per assistant and an `apm-rel
 
 When the User requests a change, identify which layer it affects. All workflow changes follow a top-down propagation:
 
-1. **Update `WORKFLOW.md` first** - Any change that affects APM's behavior, procedures, or coordination patterns must be reflected in the workflow specification before modifying runtime files. `WORKFLOW.md` is the source of truth.
+1. **Update `WORKFLOW.md` first** - Any change that affects APM Semi's behavior, procedures, or coordination patterns must be reflected in the workflow specification before modifying runtime files. `WORKFLOW.md` is the source of truth and includes both the inherited APM v1 workflow and APM Semi's collaborative overlay.
 2. **Propagate to runtime files** - Commands, guides, skills, and agent configurations implement the workflow spec. Update these to match the changes made in `WORKFLOW.md`, following the conventions in `STRUCTURE.md`, `WRITING.md`, and `TERMINOLOGY.md`.
 
 Changes that do not affect the workflow (e.g. adjusting wording within existing procedures, adding examples to guidance fields) can be made directly in runtime files without updating `WORKFLOW.md`.
+
+### Working with the Collaborative Layer
+
+APM Semi adds collaborative-execution behaviors on top of APM v1: sovereignty signal detection in Context Gathering, User-claimable Tasks, takeover protocol for in-progress Worker Tasks, standby collaboration with validation iteration, residual handling, and proactive claim suggestions. When making changes, consider whether the change interacts with this layer:
+
+- Changes to Worker procedures should preserve clean takeover (no partial Task Log on pause, takeover-time Task Brief with progress baked in)
+- Changes to Manager procedures should preserve the dual posture (dispatcher toward Workers, direct collaborator toward the User)
+- Changes to Task Logging should preserve User-owned Task Log additions (ownership field, Execution Breakdown, User Notes, Validation breakdown)
+- Changes to artifact templates (Tracker, Memory Index, Plan) should preserve apm-semi-specific structure (Owner column, sovereignty observations in Plan notes, User behavior patterns and User preferences in Memory Notes)
 
 ### Template Content Changes
 
@@ -126,7 +137,7 @@ After making changes, the User creates a release that can be installed via `apm 
 
 The `apm-release.json` manifest is what the CLI reads to discover available assistants in the release. Explore `build/generators/manifest.js` to understand its structure.
 
-Note: the `.github/workflows/` directory contains CI workflows configured for the official APM repository's release pipeline. These workflows are tailored to the official repo's versioning and publishing process. For custom repositories, the manual build-tag-release approach described above is more straightforward. The User can set up their own CI workflows if needed, but the official ones should not be assumed to work as-is in a fork.
+Note: APM Semi ships its own `.github/workflows/release-templates.yml` workflow that handles tag, build, and release in one step (manually triggered via `workflow_dispatch`). It auto-increments the patch version or accepts an override, builds all six platform bundles, creates the tag, and publishes the GitHub Release with assets attached. For deeper-fork custom repositories that diverge further, the manual build-tag-release approach above remains valid.
 
 Users install from the custom repository with:
 
@@ -138,7 +149,7 @@ apm custom -r owner/repo
 
 ## 6. Communicating Changes
 
-When the User's custom repository diverges from the official APM release, changes should be documented:
+When a custom repository diverges further from APM Semi (or APM Semi itself diverges from the official APM release), changes should be documented:
 
 - Update the repository's README to describe what was customized and why
 - If the changes affect the workflow (new procedures, modified coordination patterns), note how the customization differs from the official documentation
