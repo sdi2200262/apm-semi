@@ -37,15 +37,15 @@ Use Partial when: validation is ambiguous, important findings emerged that could
 
 ### 2.3 User-Owned Task Log Standards
 
-When a Task is owned by the User and you are the collaborating agent (Worker after a takeover, or Manager collaborating with the User on a Task per `{GUIDE_PATH:task-review}` §3.6 User-Owned Task Collaboration), you write the Task Log on the User's behalf at the standard Memory path. The log follows the standard format from §4.1 Task Log Format with the following additions, so all downstream consumption (Stage summaries, dependency context for downstream Tasks, Handoffs) works without special-casing.
+When the User has taken over a Task in your chat per `{GUIDE_PATH:task-execution}` §2.6 User Takeover Standards and reported done, you write the Task Log on the User's behalf at the standard Memory path. The log follows the standard format from §4.1 Task Log Format with the following additions for User-owned Tasks, so all downstream consumption (Stage summaries, dependency context for downstream Tasks, Handoffs) works without special-casing.
 
-**Ownership.** Set `owner: User` in YAML frontmatter. When the User took over an in-progress Worker Task, also set `takeover: true` and include a `takeover_point` field naming the step or moment at which the User took over.
+**Ownership.** Set `owner: User`, `takeover: true`, and `takeover_point` (the step or moment at which the User took over) in YAML frontmatter.
 
 **Breakdown of who did what.** Add a body section `## Execution Breakdown` recording which steps the User performed, which you performed (during the takeover before the User stepped in, or during validation iteration after the User reported done), what was attempted, what was kept, and what was reverted. The intent is that anyone reading the log can see the work as the joint effort it was.
 
 **User narrative.** Add a body section `## User Notes` capturing the narrative context the User provided (decisions made, things they noticed, deviations from the brief). Quote or paraphrase faithfully - this is the User's voice in the log.
 
-**Validation breakdown.** In the existing `## Validation` section, distinguish criteria the User checked themselves from criteria you ran on the User's behalf during validation. Note any iteration that occurred and what was kept versus reverted per `{GUIDE_PATH:task-review}` §2.12 User-Completed Work Validation Standards (or `{GUIDE_PATH:task-execution}` §2.7 User-Completed Work Validation Standards when you are the collaborating Worker).
+**Validation breakdown.** In the existing `## Validation` section, distinguish criteria the User checked themselves from criteria you ran on the User's behalf during validation. Note any iteration that occurred and what was kept versus reverted per `{GUIDE_PATH:task-execution}` §2.7 User-Completed Work Validation Standards.
 
 The log is a User-owned Task Log; status, flags, and remaining body sections follow the standard format.
 
@@ -71,7 +71,7 @@ Perform the following actions:
    - Set `status` per §2.2 Outcome Standards.
    - Set `important_findings` and `compatibility_issues` per §2.1 Flag Assessment Standards.
    - Set `stage`, `task`, `title`, and `agent` from the Task Prompt.
-   - For User-owned Task Logs per §2.3 User-Owned Task Log Standards, also set `owner: User` and (when applicable) `takeover: true` with a `takeover_point` field. The Manager writes the log directly when collaborating with the User on the Task; the Worker writes the log when the User took over an in-progress Task.
+   - For User-owned Task Logs per §2.3 User-Owned Task Log Standards, also set `owner: User`, `takeover: true`, and `takeover_point`.
 3. Complete markdown body sections per §4.1 Task Log Format. Always include: Summary, Details, Output, Validation, Issues. Include conditional sections (Compatibility Concerns, Important Findings) only when their corresponding flag is `true`. For User-owned Task Logs, also include `## Execution Breakdown` and `## User Notes` per §2.3 User-Owned Task Log Standards.
 4. Write the Task Log to `log_path`.
 
@@ -117,7 +117,7 @@ takeover_point: <step or moment>            # optional, accompanies takeover: tr
 - `stage`: Stage number from the Task Prompt.
 - `task`: Task number from the Task Prompt.
 - `title`: Task title from the Task Prompt.
-- `agent`: Your agent identifier. For User-owned Task Logs the Manager is the collaborating agent for, this is the Worker that would have owned the Task (or empty when the Task was claimed at planning with no original Worker).
+- `agent`: Your agent identifier.
 - `status`: Task outcome per §2.2 Outcome Standards. `Success`, `Partial`, or `Failed`.
 - `important_findings`: Whether discoveries have implications beyond current Task scope per §2.1 Flag Assessment Standards.
 - `compatibility_issues`: Whether output conflicts with existing systems per §2.1 Flag Assessment Standards.
