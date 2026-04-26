@@ -31,7 +31,7 @@ Perform the following actions:
    - User preferences and communication patterns.
    - Coordination insights, decisions made, approaches tried.
    - User-owned Task history during this instance: which Tasks the User claimed, which were unclaimed, takeover events on Worker Tasks, and any patterns in how the User has handled validation and reporting-done.
-   - Sovereignty and behavior observations accumulated this instance that have not yet been promoted to Memory notes.
+   - Observed User behavior patterns and any evolving sovereignty observations (beyond what Plan notes already carry) accumulated this instance that have not yet been promoted to Memory notes.
 
 ### 2.2 Handoff Prompt Creation
 
@@ -82,7 +82,7 @@ stage: <N>
 - *Summary:* Stages coordinated, Tasks reviewed, dispatch cycles completed.
 - *Working Context.* Tracked Worker Handoffs table (Agent, Handoff Stage, current-Stage logs loaded, notes) with dependency context implication. VC state: active branches, worktrees, pending merges, base branch. Dispatch patterns.
 - *Working Notes:* Coordination insights, User preferences, decisions made, approaches tried.
-- *Collaborative Context:* User-owned Task history this instance, takeover events, observed User behavior patterns (validation handling, claim and unclaim tendencies, engagement with various areas), and sovereignty or behavior observations not yet promoted to Memory notes.
+- *Collaborative Context:* User-owned Task history this instance, takeover events, observed User behavior patterns (validation handling, claim and unclaim tendencies, engagement with various areas), and any evolving sovereignty observations beyond what Plan notes already carry that have not yet been promoted to Memory notes.
 
 ---
 
@@ -94,7 +94,7 @@ Written to `.apm/bus/manager/handoff.md`. The incoming Manager processes this pr
 - *Identity:* Outgoing and incoming instance numbers.
 - *Rebuilding context:*
   1. Read Handoff Log - note tracked Worker Handoffs, VC state, and Collaborative Context.
-  2. Read the Index Memory Notes - sovereignty signals, User behavior patterns, User preferences are first-class durable memory.
+  2. Read the Plan notes for the original sovereignty observations from Context Gathering, and the Index Memory Notes for User behavior patterns and preferences accumulated during the session.
   3. Read current-Stage Task Logs (all agents).
   4. For previous-Stage dependency context encountered later: read the specific Task Log on demand. If the Task Log is insufficient, read referenced files to reconstruct context.
 - *Current State:* Current Stage, Stage progress, next Task, blockers, working notes, User-owned Task state (any Task currently held by the User and what is expected back).

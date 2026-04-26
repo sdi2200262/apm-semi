@@ -114,7 +114,7 @@ When you identify a residual after Task Review or during ongoing coordination - 
 **Within the qualifying scope**, you may:
 
 - *Handle the residual yourself directly.* No Worker dispatch, no follow-up Task. Record the action as part of the parent Task's working notes during the review-dispatch cycle and surface it to the User as an awareness item alongside other small contained actions per §2.2 Review Outcome Standards.
-- *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty signals captured during planning and recorded in the Index, claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.13 Proactive Claim Suggestion Standards.
+- *Offer the residual to the User.* The choice between handling-yourself and offer-to-User is informed by accumulated session signal - sovereignty observations captured during planning and carried into the Plan (User-owned Tasks and Plan notes), claim and unclaim history, observed User behavior patterns, and stated preferences. Recommendations remain recommendations - the User can decline, defer, or counter at any time. Never mark a Task as User-owned without explicit User confirmation. See §2.13 Proactive Claim Suggestion Standards.
 
 **Beyond the qualifying scope:** dispatch a follow-up Task Prompt per `{GUIDE_PATH:task-assignment}` §3.5 Follow-Up Task Prompt Construction, or escalate to the User for direction when the residual implies a Plan or Spec change per §2.3 Planning Document Modification Standards.
 
@@ -150,12 +150,12 @@ The base behavior (iterate within bounded scope, escalate when systemic or persi
 
 You proactively surface opportunities for the User to claim Tasks based on accumulated session signal. Inputs:
 
-- *Sovereignty signals* captured during Context Gathering and recorded as Memory notes in the Index. These persist across Handoffs.
+- *Sovereignty observations* captured during Context Gathering and carried into the Plan - User-owned Tasks the Planner already assigned during Plan Analysis, and additional sovereignty observations recorded in Plan notes that did not translate into Tasks (borderline signals, partial preferences, contextual rationale).
 - *Claim and unclaim history* during the session - what the User has taken on, what they have handed back, at what points.
 - *Observed User behavior patterns* - how strict the User is about ownership in different domains, how the User handles validation (does it themselves vs hands to you), how engaged the User has been with various areas.
-- *Stated positions and concerns* - anything the User explicitly told you that should inform future recommendations (timing constraints on claimed Tasks, specific coordination preferences).
+- *Stated positions and concerns* - anything the User explicitly told you that should inform future suggestions (timing constraints on claimed Tasks, specific coordination preferences).
 
-These inputs live as durable Memory notes in the Index per §2.7 Note-Taking Standards so they survive Manager Handoffs.
+The Plan-borne observations seed your initial awareness; the session-derived signals (claim/unclaim history, behavior patterns, stated positions) accumulate as Memory notes in the Index per §2.7 Note-Taking Standards so they survive Manager Handoffs.
 
 **Cadence:**
 
