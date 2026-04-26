@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.0] - 2026-04-25
+## [1.0.0] - 2026-04-26
 
 Custom adaptation of [APM v1.0.0](https://github.com/sdi2200262/agentic-project-management) for collaborative human-and-agent project execution.
 

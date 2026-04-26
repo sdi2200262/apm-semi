@@ -31,15 +31,17 @@ The Planner collaborates with you through project discovery and creates the plan
 
 ## How It Works
 
-APM Semi inherits APM v1 unchanged - same three agents, same two phases, same artifacts, same commands. The collaborative layer overlays it:
+APM Semi inherits APM v1 unchanged - same three agents, same two phases, same artifacts, same commands. The collaborative layer adds:
 
-During Context Gathering, the Planner listens for sovereignty signals alongside its existing focuses. During Plan Analysis those signals shape per-Task assignment - clear ones become User-owned Tasks in the Plan, remaining observations live in Plan notes for the Manager. During Plan review the User can claim or unclaim Tasks conversationally, and during the Implementation Phase the User can claim any Task at any point or take over an in-progress Worker Task in the Worker's chat. While the User holds a Task, the agent on their side stays on standby: it answers questions, runs validation when the User returns, iterates within scope on validation failures, and writes the Task Log on the User's behalf. Small mechanical residuals after Task Review can be handled by the Manager inline or offered to the User instead of always dispatching a follow-up. At Stage boundaries the Manager proactively suggests Tasks for the User to claim based on accumulated session signal; in-Stage it stays quiet unless a concrete trigger surfaces. The Manager never marks a Task as User-owned without explicit confirmation.
+- **Sovereignty signal capture (Planning Phase).** The Planner listens for areas the User wants direct ownership over. Clear signals become User-owned Tasks during Plan Analysis; remaining observations are recorded in Plan notes for the Manager.
+- **Conversational claim, unclaim, and takeover.** During Plan review and throughout the Implementation Phase, the User can claim or unclaim any Task in natural language. Taking over an in-progress Worker Task happens directly in the Worker's chat - no slash commands.
+- **Standby collaboration on User-held Tasks.** The agent on the User's side (Manager or paused Worker) answers questions, runs validation when the User returns, iterates within scope on validation failures, and writes the Task Log on the User's behalf. It does not work the Task autonomously while the User holds it.
+- **Inline residual handling.** Small mechanical residuals after Task Review can be handled by the Manager inline or offered to the User instead of always dispatching a follow-up.
+- **Proactive claim suggestions.** At Stage boundaries the Manager surfaces Tasks the User may want to claim based on accumulated session signal; in-Stage it stays quiet unless a concrete trigger surfaces. A Task is never marked User-owned without explicit confirmation.
 
 ## Trade-offs
 
-APM Semi trades execution speed for direct authorship on the work that matters to you.
-
-When the User claims a Task, an AI Worker is not writing the code - the User is. That is slower than full delegation, and it is intentional. APM Semi is for users who want to write the substantive code themselves and lean on AI for the straightforward or peripheral Tasks - a collaborative way of working agentically rather than a fully delegated one. If the User never claims a Task in a session, APM Semi behaves identically to APM v1, so nothing is lost by adopting it.
+APM Semi trades execution speed for direct authorship on the work that matters to you. When the User claims a Task, an AI Worker is not writing the code - the User is. That is slower than full delegation, and it is intentional. APM Semi is for users who want to write the substantive code themselves and lean on AI for the straightforward or peripheral Tasks - a collaborative way of working agentically rather than a fully delegated one. If the User never claims a Task in a session, APM Semi behaves identically to APM v1, so nothing is lost by adopting it.
 
 ## Commands
 
